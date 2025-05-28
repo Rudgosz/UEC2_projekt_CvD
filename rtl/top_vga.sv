@@ -49,6 +49,8 @@ module top_vga (
     assign hs = vga_rect_if.hsync;
     assign {r,g,b} = vga_rect_if.rgb[11:0];
 
+    wire [11:0] rgb_background;
+    wire [11:0] bg_addr;
 
     /**
      * Submodules instances
@@ -75,6 +77,8 @@ module top_vga (
         .hcount_in  (hcount_tim),
         .hsync_in   (hsync_tim),
         .hblnk_in   (hblnk_tim),
+        .rgb_background (rgb_background),
+        .bg_addr (bg_addr),
 
         .vga_out    (vga_bg_if.vga_out)
 
@@ -86,6 +90,12 @@ module top_vga (
 
         .vga_in     (vga_bg_if.vga_in),
         .vga_out    (vga_rect_if.vga_out)
+    );
+
+    image_rom u_image_rom (
+        .clk,
+        .address(bg_addr),
+        .rgb(rgb_background)
     );
 
 endmodule

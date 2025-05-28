@@ -18,7 +18,7 @@ module draw_bg (
         input  logic        hsync_in,
         input  logic        hblnk_in,
         input  logic [11:0] rgb_background,
-        output logic [11:0] bg_addr,
+        output logic [19:0] bg_addr,
 
 
         vga_if.vga_out vga_out
@@ -41,7 +41,7 @@ module draw_bg (
                       !hblnk_in && !vblnk_in);
                       
 
-    assign bg_addr = {11'(vcount_in), 11'(hcount_in)};
+    assign bg_addr = vcount_in * 1024 + hcount_in;
 
     logic [11:0] rgb_nxt;
     /**

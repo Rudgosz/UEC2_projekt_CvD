@@ -50,7 +50,7 @@ module top_vga (
     assign {r,g,b} = vga_rect_if.rgb[11:0];
 
     wire [11:0] rgb_background;
-    wire [11:0] bg_addr;
+    wire [19:0] bg_addr;
 
     /**
      * Submodules instances

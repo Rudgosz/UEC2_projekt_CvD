@@ -31,11 +31,12 @@ set xdc_files {
 
 # Specify SystemVerilog design files location   -- EDIT
 set sv_files {
-    ../rtl/vga_pkg.sv
+    ../rtl/background/vga_pkg.sv
     ../rtl/vga_timing.sv
-    ../rtl/draw_bg.sv
+    ../rtl/background/draw_bg.sv
     ../rtl/vga_if.sv
-    ../rtl/draw_rect.sv
+    ../rtl/background/draw_rect.sv
+    ../rtl/background/image_rom.sv
     ../rtl/top_vga.sv
     rtl/top_vga_basys3.sv
 }
@@ -51,6 +52,6 @@ set sv_files {
 # }
 
 # Specify files for a memory initialization     -- EDIT
-# set mem_files {
-#    path/to/file.data
-# }
+set mem_files {
+   ../rtl/data/BG.dat
+}

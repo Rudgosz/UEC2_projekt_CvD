@@ -55,4 +55,3 @@ module draw_rect (
     end
 
 endmodule
-

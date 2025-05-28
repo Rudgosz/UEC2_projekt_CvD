@@ -1,12 +1,3 @@
-/**
- * Copyright (C) 2025  AGH University of Science and Technology
- * MTM UEC2
- * Author: Piotr Kaczmarczyk
- *
- * Description:
- * Draw background scaled from 256x192 to 1024x768.
- */
-
 module draw_bg (
     input  logic clk,
     input  logic rst,
@@ -17,8 +8,8 @@ module draw_bg (
     input  logic [10:0] hcount_in,
     input  logic        hsync_in,
     input  logic        hblnk_in,
-    input  logic [11:0] rgb_background, // from ROM
-    output logic [19:0] bg_addr,        // address to ROM
+    input  logic [11:0] rgb_background,
+    output logic [19:0] bg_addr,
 
     vga_if.vga_out vga_out
 );
@@ -28,31 +19,22 @@ module draw_bg (
 
     import vga_pkg::*;
 
-    // Scaled coordinates (divide by 4)
     logic [9:0] scaled_x;
     logic [8:0] scaled_y;
 
-    assign scaled_x = hcount_in >> 2; // 1024 / 4 = 256
-    assign scaled_y = vcount_in >> 2; // 768 / 4 = 192
+    assign scaled_x = hcount_in >> 2;
+    assign scaled_y = vcount_in >> 2;
 
-    // Address to ROM (row-major order: y * 256 + x)
     logic [19:0] bg_addr_reg;
     assign bg_addr = bg_addr_reg;
 
-    always_ff @(posedge clk) begin
-        if (rst)
-            bg_addr_reg <= 0;
-        else
-            bg_addr_reg <= scaled_y * 256 + scaled_x;
-    end
-
-    // Delay signals to align with ROM read
     logic [10:0] hcount_d, vcount_d;
     logic        hsync_d, vsync_d;
     logic        hblnk_d, vblnk_d;
 
     always_ff @(posedge clk) begin
         if (rst) begin
+            bg_addr_reg <= 0;
             hcount_d <= 0;
             vcount_d <= 0;
             hsync_d  <= 0;
@@ -66,10 +48,10 @@ module draw_bg (
             vsync_d  <= vsync_in;
             hblnk_d  <= hblnk_in;
             vblnk_d  <= vblnk_in;
+            bg_addr_reg <= scaled_y * 256 + scaled_x;
         end
     end
 
-    // VGA output assignment
     logic [11:0] rgb_nxt;
 
     always_ff @(posedge clk) begin
@@ -92,12 +74,12 @@ module draw_bg (
         end
     end
 
-    // RGB selection logic
+
     always_comb begin
         if (!hblnk_d && !vblnk_d) begin
             rgb_nxt = rgb_background;
         end else begin
-            rgb_nxt = 12'h888; // grey background
+            rgb_nxt = 12'h8_8_8;
         end
     end
 

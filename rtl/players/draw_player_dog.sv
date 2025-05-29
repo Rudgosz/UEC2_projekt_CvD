@@ -14,8 +14,8 @@ module draw_player_dog (
 
     import vga_pkg::*;
 
-    localparam PLAYER_X = 800;
-    localparam PLAYER_Y = 500;
+    localparam PLAYER_X = 880;
+    localparam PLAYER_Y = 430;
     localparam PLAYER_WIDTH  = 140;
     localparam PLAYER_HEIGHT = 177;
 

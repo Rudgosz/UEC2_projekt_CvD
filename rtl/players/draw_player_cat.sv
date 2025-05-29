@@ -14,8 +14,8 @@ module draw_player_cat (
 
     import vga_pkg::*;
 
-    localparam PLAYER_X = 30;
-    localparam PLAYER_Y = 550;
+    localparam PLAYER_X = 1;
+    localparam PLAYER_Y = 430;
     localparam PLAYER_WIDTH  = 130;
     localparam PLAYER_HEIGHT = 99;
 

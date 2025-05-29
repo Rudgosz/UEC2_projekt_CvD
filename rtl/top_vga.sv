@@ -37,17 +37,21 @@ module top_vga (
     // VGA signals from background
     vga_if vga_bg_if();
 
-    // VGA signals from draw_rectangle
-    vga_if vga_rect_if();
+    // VGA signals from draw_player_dog
+    vga_if vga_dog_if();
+
+    //signals for draw_player_dog and dog_rom
+    logic [14:0] dog_addr;
+    logic [11:0] rgb_dog;
 
 
     /**
      * Signals assignments
      */
 
-    assign vs = vga_rect_if.vsync;
-    assign hs = vga_rect_if.hsync;
-    assign {r,g,b} = vga_rect_if.rgb[11:0];
+    assign vs = vga_dog_if.vsync;
+    assign hs = vga_dog_if.hsync;
+    assign {r,g,b} = vga_dog_if.rgb[11:0];
 
     wire [11:0] rgb_background;
     wire [19:0] bg_addr;
@@ -84,18 +88,26 @@ module top_vga (
 
     );
 
-    draw_rect u_draw_rect (
-        .clk,
-        .rst,
-
-        .vga_in     (vga_bg_if.vga_in),
-        .vga_out    (vga_rect_if.vga_out)
-    );
-
-    image_rom u_image_rom (
+    image_rom u_image_rom_background (
         .clk,
         .address(bg_addr),
         .rgb(rgb_background)
     );
+
+    draw_player_dog u_draw_player_dog (
+        .clk,
+        .rst,
+        .rgb_dog(rgb_dog),
+        .dog_addr(dog_addr),
+        .vga_in     (vga_bg_if.vga_in),
+        .vga_out    (vga_dog_if.vga_out)
+    );
+
+    image_rom_dog u_image_rom_dog (
+        .clk,
+        .address(dog_addr),
+        .rgb(rgb_dog)
+    );
+    
 
 endmodule

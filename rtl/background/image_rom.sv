@@ -33,7 +33,7 @@ module image_rom (
      */
 
     /* Relative path from the simulation or synthesis working directory */
-    initial $readmemh("../../rtl/data/BG.dat", rom);
+    initial $readmemh("../../rtl/data/background/BG.dat", rom);
 
 
     /**

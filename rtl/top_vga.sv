@@ -40,18 +40,26 @@ module top_vga (
     // VGA signals from draw_player_dog
     vga_if vga_dog_if();
 
+    // VGA signals from draw_player_cat
+    vga_if vga_cat_if();
+
     //signals for draw_player_dog and dog_rom
     logic [14:0] dog_addr;
     logic [11:0] rgb_dog;
+
+
+    //signals for draw_player_cat and cat_rom
+    logic [13:0] cat_addr;
+    logic [11:0] rgb_cat;
 
 
     /**
      * Signals assignments
      */
 
-    assign vs = vga_dog_if.vsync;
-    assign hs = vga_dog_if.hsync;
-    assign {r,g,b} = vga_dog_if.rgb[11:0];
+    assign vs = vga_cat_if.vsync;
+    assign hs = vga_cat_if.hsync;
+    assign {r,g,b} = vga_cat_if.rgb[11:0];
 
     wire [11:0] rgb_background;
     wire [19:0] bg_addr;
@@ -107,6 +115,22 @@ module top_vga (
         .clk,
         .address(dog_addr),
         .rgb(rgb_dog)
+    );
+
+
+    draw_player_cat u_draw_player_cat (
+        .clk,
+        .rst,
+        .rgb_cat(rgb_cat),
+        .cat_addr(cat_addr),
+        .vga_in     (vga_dog_if.vga_in),
+        .vga_out    (vga_cat_if.vga_out)
+    );
+
+    image_rom_cat u_image_rom_cat (
+        .clk,
+        .address(cat_addr),
+        .rgb(rgb_cat)
     );
     
 

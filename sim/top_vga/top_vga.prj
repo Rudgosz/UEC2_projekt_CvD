@@ -17,5 +17,7 @@ sv work ../../rtl/background/vga_pkg.sv \
         ../../rtl/top_vga.sv \
         ../../rtl/players/image_rom_dog.sv \
         ../../rtl/players/draw_player_dog.sv \
+        ../../rtl/players/image_rom_cat.sv \
+        ../../rtl/players/draw_player_cat.sv \
         ../common/tiff_writer.sv \
         top_vga_tb.sv

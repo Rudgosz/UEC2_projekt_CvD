@@ -1,9 +1,9 @@
-module draw_player_dog (
+module draw_player_cat (
     input  logic clk,
     input  logic rst,
 
-    input  logic [11:0] rgb_dog,
-    output logic [14:0] dog_addr,
+    input  logic [11:0] rgb_cat,
+    output logic [13:0] cat_addr,
 
     vga_if.vga_in  vga_in,
     vga_if.vga_out vga_out
@@ -14,19 +14,19 @@ module draw_player_dog (
 
     import vga_pkg::*;
 
-    localparam PLAYER_X = 800;
-    localparam PLAYER_Y = 500;
-    localparam PLAYER_WIDTH  = 140;
-    localparam PLAYER_HEIGHT = 177;
+    localparam PLAYER_X = 30;
+    localparam PLAYER_Y = 550;
+    localparam PLAYER_WIDTH  = 130;
+    localparam PLAYER_HEIGHT = 99;
 
     logic [10:0] hcount_d, vcount_d;
     logic hsync_d, vsync_d;
     logic hblnk_d, vblnk_d;
     logic [11:0] rgb_in_d;
 
-    logic inside_dog;
+    logic inside_cat;
 
-    assign inside_dog = (hcount_d >= PLAYER_X) && (hcount_d < PLAYER_X + PLAYER_WIDTH) &&
+    assign inside_cat = (hcount_d >= PLAYER_X) && (hcount_d < PLAYER_X + PLAYER_WIDTH) &&
                         (vcount_d >= PLAYER_Y) && (vcount_d < PLAYER_Y + PLAYER_HEIGHT) &&
                         !hblnk_d && !vblnk_d;
 
@@ -36,7 +36,7 @@ module draw_player_dog (
     assign rel_x = hcount_d - PLAYER_X;
     assign rel_y = vcount_d - PLAYER_Y;
 
-    assign dog_addr = rel_y * PLAYER_WIDTH + rel_x;
+    assign cat_addr = rel_y * PLAYER_WIDTH + rel_x;
 
     logic [11:0] rgb_nxt;
 
@@ -77,8 +77,8 @@ module draw_player_dog (
     end
 
     always_comb begin
-        if (inside_dog && rgb_dog != 12'h000) // czarne tło
-            rgb_nxt = rgb_dog;
+        if (inside_cat && rgb_cat != 12'h000) // czarne tło
+            rgb_nxt = rgb_cat;
         else
             rgb_nxt = rgb_in_d;
     end

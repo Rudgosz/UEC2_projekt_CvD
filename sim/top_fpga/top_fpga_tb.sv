@@ -57,7 +57,7 @@ module top_fpga_tb;
      */
 
     top_vga_basys3 dut (
-        .clk(clk65MHz),
+        .clk(clk),
         .btnC(rst),
         .Vsync(vs),
         .Hsync(hs),

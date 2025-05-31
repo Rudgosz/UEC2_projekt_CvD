@@ -11,6 +11,7 @@
 
 sv work ../../rtl/background/vga_pkg.sv \
         ../../rtl/vga_timing.sv \
+        ../../rtl/game_controller.sv \
         ../../rtl/background/draw_bg.sv \
         ../../rtl/background/image_rom.sv \
         ../../rtl/vga_if.sv \

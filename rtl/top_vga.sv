@@ -15,6 +15,7 @@
 module top_vga (
         input  logic clk65MHz,
         input  logic rst,
+        input  logic btnU,
         output logic vs,
         output logic hs,
         output logic [3:0] r,
@@ -46,11 +47,17 @@ module top_vga (
     //signals for draw_player_dog and dog_rom
     logic [14:0] dog_addr;
     logic [11:0] rgb_dog;
-
+    logic [1:0]  dog_state;
 
     //signals for draw_player_cat and cat_rom
     logic [13:0] cat_addr;
     logic [11:0] rgb_cat;
+    logic [1:0]  cat_state;
+
+    //signals for game controller
+    logic cat_turn, dog_turn;
+    logic throw_command;
+    logic cat_throw_complete, dog_throw_complete;
 
 
     /**
@@ -79,6 +86,17 @@ module top_vga (
         .hblnk  (hblnk_tim)
     );
 
+    game_controller u_game_controller (
+        .clk(clk65MHz),
+        .rst,
+        .throw_button(btnU),
+        .cat_throw_complete(cat_throw_complete),
+        .dog_throw_complete(dog_throw_complete),
+        .cat_turn(cat_turn),
+        .dog_turn(dog_turn),
+        .throw_command(throw_command)
+    );
+
     draw_bg u_draw_bg (
         .clk(clk65MHz),
         .rst,
@@ -105,6 +123,12 @@ module top_vga (
     draw_player_dog u_draw_player_dog (
         .clk(clk65MHz),
         .rst,
+
+        .turn_active(dog_turn),
+        .throw_command(throw_command),
+        .dog_state(dog_state),
+        .throw_complete(dog_throw_complete),
+
         .rgb_dog(rgb_dog),
         .dog_addr(dog_addr),
         .vga_in     (vga_bg_if.vga_in),
@@ -121,6 +145,12 @@ module top_vga (
     draw_player_cat u_draw_player_cat (
         .clk(clk65MHz),
         .rst,
+
+        .turn_active(cat_turn),
+        .throw_command(throw_command),
+        .cat_state(cat_state),
+        .throw_complete(cat_throw_complete),
+
         .rgb_cat(rgb_cat),
         .cat_addr(cat_addr),
         .vga_in     (vga_dog_if.vga_in),

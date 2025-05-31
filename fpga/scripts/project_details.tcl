@@ -35,6 +35,7 @@ set sv_files {
     ../rtl/vga_timing.sv
     ../rtl/vga_if.sv
     ../rtl/top_vga.sv
+    ../rtl/game_controller.sv
     rtl/top_vga_basys3.sv
     ../rtl/background/vga_pkg.sv
     ../rtl/background/draw_bg.sv

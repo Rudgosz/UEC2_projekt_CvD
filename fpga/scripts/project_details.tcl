@@ -47,9 +47,9 @@ set sv_files {
 }
 
 # Specify Verilog design files location         -- EDIT
-# set verilog_files {
-#     path/to/file.v
-# }
+set verilog_files {
+    rtl/clk_wiz_0_clk_wiz.v
+}
 
 # Specify VHDL design files location            -- EDIT
 # set vhdl_files {

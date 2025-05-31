@@ -13,7 +13,7 @@
  */
 
 module top_vga (
-        input  logic clk,
+        input  logic clk65MHz,
         input  logic rst,
         output logic vs,
         output logic hs,
@@ -69,7 +69,7 @@ module top_vga (
      */
 
     vga_timing u_vga_timing (
-        .clk,
+        .clk(clk65MHz),
         .rst,
         .vcount (vcount_tim),
         .vsync  (vsync_tim),
@@ -80,7 +80,7 @@ module top_vga (
     );
 
     draw_bg u_draw_bg (
-        .clk,
+        .clk(clk65MHz),
         .rst,
 
         .vcount_in  (vcount_tim),
@@ -97,13 +97,13 @@ module top_vga (
     );
 
     image_rom u_image_rom_background (
-        .clk,
+        .clk(clk65MHz),
         .address(bg_addr),
         .rgb(rgb_background)
     );
 
     draw_player_dog u_draw_player_dog (
-        .clk,
+        .clk(clk65MHz),
         .rst,
         .rgb_dog(rgb_dog),
         .dog_addr(dog_addr),
@@ -112,14 +112,14 @@ module top_vga (
     );
 
     image_rom_dog u_image_rom_dog (
-        .clk,
+        .clk(clk65MHz),
         .address(dog_addr),
         .rgb(rgb_dog)
     );
 
 
     draw_player_cat u_draw_player_cat (
-        .clk,
+        .clk(clk65MHz),
         .rst,
         .rgb_cat(rgb_cat),
         .cat_addr(cat_addr),
@@ -128,7 +128,7 @@ module top_vga (
     );
 
     image_rom_cat u_image_rom_cat (
-        .clk,
+        .clk(clk65MHz),
         .address(cat_addr),
         .rgb(rgb_cat)
     );

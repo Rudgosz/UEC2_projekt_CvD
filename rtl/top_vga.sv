@@ -61,8 +61,8 @@ module top_vga (
     assign hs = vga_cat_if.hsync;
     assign {r,g,b} = vga_cat_if.rgb[11:0];
 
-    wire [11:0] rgb_background;
-    wire [19:0] bg_addr;
+    logic [11:0] rgb_background;
+    logic [19:0] bg_addr;
 
     /**
      * Submodules instances
@@ -133,5 +133,4 @@ module top_vga (
         .rgb(rgb_cat)
     );
     
-
 endmodule

@@ -42,13 +42,6 @@ module draw_player_cat (
 
         always_ff @(posedge clk) begin
         if (rst) begin
-            vga_out.vcount <= 0;
-            vga_out.vsync  <= 0;
-            vga_out.vblnk  <= 0;
-            vga_out.hcount <= 0;
-            vga_out.hsync  <= 0;
-            vga_out.hblnk  <= 0;
-            vga_out.rgb    <= 0;
 
             hcount_d <= 0;
             vcount_d <= 0;
@@ -57,7 +50,9 @@ module draw_player_cat (
             hblnk_d  <= 0;
             vblnk_d  <= 0;
             rgb_in_d <= 0;
+
         end else begin
+            
             hcount_d <= vga_in.hcount;
             vcount_d <= vga_in.vcount;
             hsync_d  <= vga_in.hsync;
@@ -66,15 +61,17 @@ module draw_player_cat (
             vblnk_d  <= vga_in.vblnk;
             rgb_in_d <= vga_in.rgb;
 
-            vga_out.hcount <= hcount_d;
-            vga_out.vcount <= vcount_d;
-            vga_out.hsync  <= hsync_d;
-            vga_out.vsync  <= vsync_d;
-            vga_out.hblnk  <= hblnk_d;
-            vga_out.vblnk  <= vblnk_d;
-            vga_out.rgb    <= rgb_nxt;
         end
     end
+
+    assign vga_out.hcount = hcount_d; 
+    assign vga_out.vcount = vcount_d; 
+    assign vga_out.hsync = hsync_d; 
+    assign vga_out.vsync = vsync_d; 
+    assign vga_out.hblnk = hblnk_d; 
+    assign vga_out.vblnk = vblnk_d; 
+    assign vga_out.rgb = rgb_nxt; 
+
 
     always_comb begin
         if (inside_cat && rgb_cat != 12'h000) // czarne tło

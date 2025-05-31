@@ -31,14 +31,19 @@ set xdc_files {
 
 # Specify SystemVerilog design files location   -- EDIT
 set sv_files {
-    ../rtl/background/vga_pkg.sv
+
     ../rtl/vga_timing.sv
-    ../rtl/background/draw_bg.sv
     ../rtl/vga_if.sv
-    ../rtl/background/draw_rect.sv
-    ../rtl/background/image_rom.sv
     ../rtl/top_vga.sv
     rtl/top_vga_basys3.sv
+    ../rtl/background/vga_pkg.sv
+    ../rtl/background/draw_bg.sv
+    ../rtl/background/image_rom.sv
+    ../rtl/players/draw_player_cat.sv
+    ../rtl/players/draw_player_dog.sv
+    ../rtl/players/image_rom_cat.sv
+    ../rtl/players/image_rom_dog.sv
+
 }
 
 # Specify Verilog design files location         -- EDIT
@@ -53,5 +58,7 @@ set sv_files {
 
 # Specify files for a memory initialization     -- EDIT
 set mem_files {
-   ../rtl/data/BG.dat
+   ../rtl/data/background/BG.dat
+   ../rtl/data/players/cat_throw.dat
+   ../rtl/data/players/dog_throw.dat
 }

@@ -79,7 +79,7 @@ module draw_bg (
         if (!hblnk_d && !vblnk_d) begin
             rgb_nxt = rgb_background;
         end else begin
-            rgb_nxt = 12'h8_8_8;
+            rgb_nxt = 12'h0_0_0;
         end
     end
 

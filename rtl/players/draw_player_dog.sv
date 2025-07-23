@@ -22,7 +22,7 @@ module draw_player_dog (
     localparam PLAYER_X = 880;
     localparam PLAYER_Y = 430;
     localparam PLAYER_WIDTH  = 140;
-    localparam PLAYER_HEIGHT = 177;
+    localparam PLAYER_HEIGHT = 151;
     localparam IDLE = 2'b00;
     localparam THROW1 = 2'b01;
     localparam THROW2 = 2'b10;
@@ -107,7 +107,7 @@ module draw_player_dog (
 
 
     always_comb begin
-        if (inside_dog && rgb_dog != 12'h000) // czarne tło
+        if (inside_dog && rgb_dog != 12'h0F0) // czarne tło
             rgb_nxt = rgb_dog;
         else
             rgb_nxt = rgb_in_d;

@@ -22,7 +22,7 @@ module draw_player_cat (
 
     localparam PLAYER_X = 1;
     localparam PLAYER_Y = 430;
-    localparam PLAYER_WIDTH  = 130;
+    localparam PLAYER_WIDTH  = 157;
     localparam PLAYER_HEIGHT = 99;
     localparam IDLE = 2'b00;
     localparam THROW1 = 2'b01;
@@ -107,7 +107,7 @@ module draw_player_cat (
 
 
     always_comb begin
-        if (inside_cat && rgb_cat != 12'h000) // czarne tło
+        if (inside_cat && rgb_cat != 12'h0F0)
             rgb_nxt = rgb_cat;
         else
             rgb_nxt = rgb_in_d;

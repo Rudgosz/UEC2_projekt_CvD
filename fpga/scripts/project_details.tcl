@@ -60,6 +60,6 @@ set verilog_files {
 # Specify files for a memory initialization     -- EDIT
 set mem_files {
    ../rtl/data/background/BG.dat
-   ../rtl/data/players/cat_throw.dat
-   ../rtl/data/players/dog_throw.dat
+   ../rtl/data/players/cat_full.dat
+   ../rtl/data/players/dog_full.dat
 }

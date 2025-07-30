@@ -4,6 +4,8 @@ module draw_player_dog (
     input  logic turn_active,
     input  logic throw_command,
 
+    input  logic [7:0]  throw_power,
+
     input  logic [11:0] rgb_dog,
     output logic [14:0] dog_addr,
 
@@ -53,7 +55,7 @@ module draw_player_dog (
     logic        throw_command_prev;
 
     assign dog_state = state;
-    assign throw_complete = (state == THROW2) && (throw_timer > 1000000);
+    assign throw_complete = (state == THROW2) && (throw_timer > (1000000 + throw_power * 10000));
 
 
     always_ff @(posedge clk) begin

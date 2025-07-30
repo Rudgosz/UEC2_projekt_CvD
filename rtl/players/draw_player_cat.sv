@@ -5,6 +5,8 @@ module draw_player_cat (
     input  logic turn_active,  // Aktywna tura
     input  logic throw_command, // Rzut
 
+    input  logic [7:0]  throw_power,
+
     input  logic [11:0] rgb_cat,
     output logic [13:0] cat_addr,
 
@@ -51,8 +53,7 @@ module draw_player_cat (
     logic [23:0] throw_timer;
     logic        throw_command_prev;
 
-    assign cat_state = state;
-    assign throw_complete = (state == THROW2) && (throw_timer > 1000000);
+    assign throw_complete = (state == THROW2) && (throw_timer > (1000000 + throw_power * 10000));
 
     logic [11:0] rgb_nxt;
 
@@ -96,6 +97,8 @@ module draw_player_cat (
 
         end
     end
+
+    assign cat_state = state;
 
     assign vga_out.hcount = hcount_d; 
     assign vga_out.vcount = vcount_d; 

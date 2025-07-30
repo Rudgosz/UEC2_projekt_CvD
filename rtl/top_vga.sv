@@ -15,7 +15,9 @@
 module top_vga (
         input  logic clk65MHz,
         input  logic rst,
-        input  logic btnU,
+    //    input  logic btnU,
+        input logic PS2Clk,
+        input logic PS2Data,
         output logic vs,
         output logic hs,
         output logic [3:0] r,
@@ -44,6 +46,10 @@ module top_vga (
     // VGA signals from draw_player_cat
     vga_if vga_cat_if();
 
+    // Keyboard signals
+    logic throw_keyboard_trigger;
+    logic [7:0] throw_keyboard_power;
+
     //signals for draw_player_dog and dog_rom
     logic [14:0] dog_addr;
     logic [11:0] rgb_dog;
@@ -58,6 +64,10 @@ module top_vga (
     logic cat_turn, dog_turn;
     logic throw_command;
     logic cat_throw_complete, dog_throw_complete;
+    logic [7:0] throw_power_out;
+
+    logic [7:0] ps2_keycode;
+    logic       ps2_key_valid;
 
 
     /**
@@ -75,8 +85,25 @@ module top_vga (
      * Submodules instances
      */
 
+    keyboard_controller u_keyboard (
+        .clk            (clk65MHz),
+        .rst            (rst),
+        .ps2_keycode    (ps2_keycode),
+        .ps2_key_valid  (ps2_key_valid),
+        .throw_trigger  (throw_keyboard_trigger),
+        .throw_power    (throw_keyboard_power)
+    );
+
+    ps2_receiver u_ps2_receiver (
+        .clk        (clk65MHz),
+        .ps2_clk    (PS2Clk),
+        .ps2_data   (PS2Data),
+        .keycode    (ps2_keycode),
+        .key_valid  (ps2_key_valid)
+    );
+
     vga_timing u_vga_timing (
-        .clk(clk65MHz),
+        .clk    (clk65MHz),
         .rst,
         .vcount (vcount_tim),
         .vsync  (vsync_tim),
@@ -89,12 +116,14 @@ module top_vga (
     game_controller u_game_controller (
         .clk(clk65MHz),
         .rst,
-        .throw_button(btnU),
-        .cat_throw_complete(cat_throw_complete),
-        .dog_throw_complete(dog_throw_complete),
-        .cat_turn(cat_turn),
-        .dog_turn(dog_turn),
-        .throw_command(throw_command)
+        .throw_trigger      (throw_keyboard_trigger),
+        .throw_power        (throw_keyboard_power),
+        .cat_throw_complete (cat_throw_complete),
+        .dog_throw_complete (dog_throw_complete),
+        .cat_turn           (cat_turn),
+        .dog_turn           (dog_turn),
+        .throw_command      (throw_command),
+        .power_out          (throw_power_out)
     );
 
     draw_bg u_draw_bg (
@@ -126,6 +155,7 @@ module top_vga (
 
         .turn_active(dog_turn),
         .throw_command(throw_command),
+        .throw_power(throw_power_out),
         .dog_state(dog_state),
         .throw_complete(dog_throw_complete),
 
@@ -148,6 +178,7 @@ module top_vga (
 
         .turn_active(cat_turn),
         .throw_command(throw_command),
+        .throw_power(throw_power_out),
         .cat_state(cat_state),
         .throw_complete(cat_throw_complete),
 

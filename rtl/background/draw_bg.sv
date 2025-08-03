@@ -11,6 +11,9 @@ module draw_bg (
     input  logic [11:0] rgb_background,
     output logic [19:0] bg_addr,
 
+    input  logic        rectangle_on,
+    input  logic [11:0] rgb_rectangle,
+
     vga_if.vga_out vga_out
 );
 
@@ -74,13 +77,18 @@ module draw_bg (
         end
     end
 
-
-    always_comb begin
-        if (!hblnk_d && !vblnk_d) begin
-            rgb_nxt = rgb_background;
-        end else begin
-            rgb_nxt = 12'h0_0_0;
+        always_comb begin
+            if (!hblnk_d && !vblnk_d) begin
+                if (rgb_background != 12'h000) begin
+                    rgb_nxt = rgb_background;
+                end else if (rectangle_on) begin
+                    rgb_nxt = rgb_rectangle;
+                end else begin
+                    rgb_nxt = 12'h000;
+                end
+            end else begin
+                rgb_nxt = 12'h000;
+            end
         end
-    end
 
 endmodule

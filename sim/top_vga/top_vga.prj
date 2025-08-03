@@ -15,6 +15,10 @@ sv work ../../rtl/background/vga_pkg.sv \
         ../../rtl/background/draw_bg.sv \
         ../../rtl/background/image_rom.sv \
         ../../rtl/vga_if.sv \
+        ../../rtl/keyboard/keyboard_controller.sv \
+        ../../rtl/keyboard/PS2Receiver.sv \
+        ../../rtl/keyboard/debouncer.v \
+        ../../rtl/draw_rectangle.sv \
         ../../rtl/top_vga.sv \
         ../../rtl/players/image_rom_dog.sv \
         ../../rtl/players/draw_player_dog.sv \

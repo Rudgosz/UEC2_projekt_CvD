@@ -46,6 +46,9 @@ module top_vga (
     // VGA signals from draw_player_cat
     vga_if vga_cat_if();
 
+    // VGA signals from draw_rectangle
+    vga_if vga_rect_if();
+
     // Keyboard signals
     logic throw_keyboard_trigger;
     logic [7:0] throw_keyboard_power;
@@ -66,8 +69,9 @@ module top_vga (
     logic cat_throw_complete, dog_throw_complete;
     logic [7:0] throw_power_out;
 
-    logic [7:0] ps2_keycode;
+    logic [15:0] ps2_keycode;
     logic       ps2_key_valid;
+    logic       space;
 
 
     /**
@@ -78,28 +82,40 @@ module top_vga (
     assign hs = vga_cat_if.hsync;
     assign {r,g,b} = vga_cat_if.rgb[11:0];
 
+    assign throw_keyboard_trigger = space;
+
     logic [11:0] rgb_background;
     logic [19:0] bg_addr;
+
+    logic rectangle_on;
+    logic [11:0] rgb_rectangle;
 
     /**
      * Submodules instances
      */
 
     keyboard_controller u_keyboard (
-        .clk            (clk65MHz),
-        .rst            (rst),
-        .ps2_keycode    (ps2_keycode),
-        .ps2_key_valid  (ps2_key_valid),
-        .throw_trigger  (throw_keyboard_trigger),
-        .throw_power    (throw_keyboard_power)
+        .clk(clk65MHz),
+        .keycode(ps2_keycode),
+        .space(space)
     );
 
-    ps2_receiver u_ps2_receiver (
+    draw_rectangle u_draw_rectangle (
+        .clk(clk65MHz),
+        .rst(rst),
+        .space(space),
+        .rectangle_on(rectangle_on),
+        .rgb_rectangle(rgb_rectangle),
+        .vga_in(vga_bg_if.vga_out),
+        .vga_out(vga_rect_if.vga_out)
+    );
+
+    PS2Receiver u_ps2_receiver (
         .clk        (clk65MHz),
-        .ps2_clk    (PS2Clk),
-        .ps2_data   (PS2Data),
+        .kclk       (PS2Clk),
+        .kdata      (PS2Data),
         .keycode    (ps2_keycode),
-        .key_valid  (ps2_key_valid)
+        .oflag()
     );
 
     vga_timing u_vga_timing (
@@ -138,6 +154,9 @@ module top_vga (
         .hblnk_in   (hblnk_tim),
         .rgb_background (rgb_background),
         .bg_addr (bg_addr),
+
+        .rectangle_on(rectangle_on),
+        .rgb_rectangle(rgb_rectangle),
 
         .vga_out    (vga_bg_if.vga_out)
 

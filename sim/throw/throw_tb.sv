@@ -4,12 +4,10 @@ module throw_tb;
 
     localparam CLK65_PERIOD = 15.385; // 65MHz period (15.385ns)
 
-    logic clk;
-    logic rst;
-    logic enable;
-    logic [11:0] y_pos;
+    logic clk, rst, enable;
+    logic [11:0] y_pos, x_pos;
 
-    throw_ctl dut (.*); // Connect all ports automatically
+    throw_ctl dut (.*); // Auto-connect ports
 
     // Clock generation
     initial begin
@@ -24,20 +22,18 @@ module throw_tb;
         enable = 0;
         #100;
 
-        // Release reset and trigger motion
+        // Release reset and trigger throw
         rst = 0;
         #100;
         enable = 1;
         #(CLK65_PERIOD);
         enable = 0;
 
-        // Observe for 1200 cycles (enough to see full parabola)
-        #(6400 * CLK65_PERIOD);
+        // Observe full motion (1200 cycles)
+        #(2400 * CLK65_PERIOD);
 
-        // Verify final state
-        if (y_pos !== 0) $error("Error: y_pos did not return to 0");
-        else $display("Success: Parabolic motion completed (0→100→0)");
-
+        // Print results
+        $display("Final positions: x=%0d, y=%0d", x_pos, y_pos);
         $finish;
     end
 

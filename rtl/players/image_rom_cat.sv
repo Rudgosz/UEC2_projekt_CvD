@@ -1,0 +1,39 @@
+module image_rom_cat (
+        input  logic clk ,
+        input  logic [13:0] address,
+        input  logic [1:0]  state,
+        output logic [11:0] rgb
+    );
+
+
+    /**
+     * Local variables and signals
+     */
+
+
+    localparam int IMAGE_SIZE = 15543;
+    localparam int TOTAL_SIZE = 3 * IMAGE_SIZE;
+
+
+    reg [11:0] rom [0:TOTAL_SIZE-1];
+
+    
+
+    /**
+     * Memory initialization from a file
+     */
+
+    /* Relative path from the simulation or synthesis working directory */
+    initial $readmemh("../../rtl/data/players/cat_full.dat", rom);
+
+
+
+    /**
+     * Internal logic
+     */
+
+    always_ff @(posedge clk) begin
+        rgb <= rom[address + 2 * IMAGE_SIZE];
+    end
+
+endmodule

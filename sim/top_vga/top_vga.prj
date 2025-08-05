@@ -11,10 +11,14 @@
 
 sv work ../../rtl/background/vga_pkg.sv \
         ../../rtl/vga_timing.sv \
+        ../../rtl/game_controller.sv \
         ../../rtl/background/draw_bg.sv \
-        ../../rtl/background/draw_rect.sv \
+        ../../rtl/background/image_rom.sv \
         ../../rtl/vga_if.sv \
         ../../rtl/top_vga.sv \
-        ../../rtl/background/image_rom.sv \
+        ../../rtl/players/image_rom_dog.sv \
+        ../../rtl/players/draw_player_dog.sv \
+        ../../rtl/players/image_rom_cat.sv \
+        ../../rtl/players/draw_player_cat.sv \
         ../common/tiff_writer.sv \
         top_vga_tb.sv

@@ -13,8 +13,9 @@
  */
 
 module top_vga (
-        input  logic clk,
+        input  logic clk65MHz,
         input  logic rst,
+        input  logic btnU,
         output logic vs,
         output logic hs,
         output logic [3:0] r,
@@ -37,27 +38,45 @@ module top_vga (
     // VGA signals from background
     vga_if vga_bg_if();
 
-    // VGA signals from draw_rectangle
-    vga_if vga_rect_if();
+    // VGA signals from draw_player_dog
+    vga_if vga_dog_if();
+
+    // VGA signals from draw_player_cat
+    vga_if vga_cat_if();
+
+    //signals for draw_player_dog and dog_rom
+    logic [14:0] dog_addr;
+    logic [11:0] rgb_dog;
+    logic [1:0]  dog_state;
+
+    //signals for draw_player_cat and cat_rom
+    logic [13:0] cat_addr;
+    logic [11:0] rgb_cat;
+    logic [1:0]  cat_state;
+
+    //signals for game controller
+    logic cat_turn, dog_turn;
+    logic throw_command;
+    logic cat_throw_complete, dog_throw_complete;
 
 
     /**
      * Signals assignments
      */
 
-    assign vs = vga_rect_if.vsync;
-    assign hs = vga_rect_if.hsync;
-    assign {r,g,b} = vga_rect_if.rgb[11:0];
+    assign vs = vga_cat_if.vsync;
+    assign hs = vga_cat_if.hsync;
+    assign {r,g,b} = vga_cat_if.rgb[11:0];
 
-    wire [11:0] rgb_background;
-    wire [11:0] bg_addr;
+    logic [11:0] rgb_background;
+    logic [19:0] bg_addr;
 
     /**
      * Submodules instances
      */
 
     vga_timing u_vga_timing (
-        .clk,
+        .clk(clk65MHz),
         .rst,
         .vcount (vcount_tim),
         .vsync  (vsync_tim),
@@ -67,8 +86,19 @@ module top_vga (
         .hblnk  (hblnk_tim)
     );
 
+    game_controller u_game_controller (
+        .clk(clk65MHz),
+        .rst,
+        .throw_button(btnU),
+        .cat_throw_complete(cat_throw_complete),
+        .dog_throw_complete(dog_throw_complete),
+        .cat_turn(cat_turn),
+        .dog_turn(dog_turn),
+        .throw_command(throw_command)
+    );
+
     draw_bg u_draw_bg (
-        .clk,
+        .clk(clk65MHz),
         .rst,
 
         .vcount_in  (vcount_tim),
@@ -84,18 +114,53 @@ module top_vga (
 
     );
 
-    draw_rect u_draw_rect (
-        .clk,
-        .rst,
-
-        .vga_in     (vga_bg_if.vga_in),
-        .vga_out    (vga_rect_if.vga_out)
-    );
-
-    image_rom u_image_rom (
-        .clk,
+    image_rom u_image_rom_background (
+        .clk(clk65MHz),
         .address(bg_addr),
         .rgb(rgb_background)
     );
 
+    draw_player_dog u_draw_player_dog (
+        .clk(clk65MHz),
+        .rst,
+
+        .turn_active(dog_turn),
+        .throw_command(throw_command),
+        .dog_state(dog_state),
+        .throw_complete(dog_throw_complete),
+
+        .rgb_dog(rgb_dog),
+        .dog_addr(dog_addr),
+        .vga_in     (vga_bg_if.vga_in),
+        .vga_out    (vga_dog_if.vga_out)
+    );
+
+    image_rom_dog u_image_rom_dog (
+        .clk(clk65MHz),
+        .address(dog_addr),
+        .rgb(rgb_dog)
+    );
+
+
+    draw_player_cat u_draw_player_cat (
+        .clk(clk65MHz),
+        .rst,
+
+        .turn_active(cat_turn),
+        .throw_command(throw_command),
+        .cat_state(cat_state),
+        .throw_complete(cat_throw_complete),
+
+        .rgb_cat(rgb_cat),
+        .cat_addr(cat_addr),
+        .vga_in     (vga_dog_if.vga_in),
+        .vga_out    (vga_cat_if.vga_out)
+    );
+
+    image_rom_cat u_image_rom_cat (
+        .clk(clk65MHz),
+        .address(cat_addr),
+        .rgb(rgb_cat)
+    );
+    
 endmodule

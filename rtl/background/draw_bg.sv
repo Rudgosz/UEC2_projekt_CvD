@@ -1,80 +1,86 @@
-/**
- * Copyright (C) 2025  AGH University of Science and Technology
- * MTM UEC2
- * Author: Piotr Kaczmarczyk
- *
- * Description:
- * Draw background.
- */
-
 module draw_bg (
-        input  logic clk,
-        input  logic rst,
+    input  logic clk,
+    input  logic rst,
 
-        input  logic [10:0] vcount_in,
-        input  logic        vsync_in,
-        input  logic        vblnk_in,
-        input  logic [10:0] hcount_in,
-        input  logic        hsync_in,
-        input  logic        hblnk_in,
-        input  logic [11:0] rgb_background,
-        output logic [11:0] bg_addr,
+    input  logic [10:0] vcount_in,
+    input  logic        vsync_in,
+    input  logic        vblnk_in,
+    input  logic [10:0] hcount_in,
+    input  logic        hsync_in,
+    input  logic        hblnk_in,
+    input  logic [11:0] rgb_background,
+    output logic [19:0] bg_addr,
 
-
-        vga_if.vga_out vga_out
-    );
+    vga_if.vga_out vga_out
+);
 
     timeunit 1ns;
     timeprecision 1ps;
 
     import vga_pkg::*;
 
+    logic [9:0] scaled_x;
+    logic [8:0] scaled_y;
 
-    /**
-     * Local variables and signals
-     */
+    assign scaled_x = hcount_in >> 2;
+    assign scaled_y = vcount_in >> 2;
 
-    logic bg_pixel;
+    logic [19:0] bg_addr_reg;
+    assign bg_addr = bg_addr_reg;
 
-    assign bg_pixel = ((hcount_in >= 0) && (hcount_in <= HOR_PIXELS) && 
-                      (vcount_in >= 0) && (vcount_in <= VER_PIXELS) &&
-                      !hblnk_in && !vblnk_in);
-                      
+    logic [10:0] hcount_d, vcount_d;
+    logic        hsync_d, vsync_d;
+    logic        hblnk_d, vblnk_d;
 
-    assign bg_addr = {11'(vcount_in), 11'(hcount_in)};
+    always_ff @(posedge clk) begin
+        if (rst) begin
+            bg_addr_reg <= 0;
+            hcount_d <= 0;
+            vcount_d <= 0;
+            hsync_d  <= 0;
+            vsync_d  <= 0;
+            hblnk_d  <= 0;
+            vblnk_d  <= 0;
+        end else begin
+            hcount_d <= hcount_in;
+            vcount_d <= vcount_in;
+            hsync_d  <= hsync_in;
+            vsync_d  <= vsync_in;
+            hblnk_d  <= hblnk_in;
+            vblnk_d  <= vblnk_in;
+            bg_addr_reg <= scaled_y * 256 + scaled_x;
+        end
+    end
 
     logic [11:0] rgb_nxt;
-    /**
-     * Internal logic
-     */
 
-    always_ff @(posedge clk) begin : bg_ff_blk
+    always_ff @(posedge clk) begin
         if (rst) begin
-            vga_out.vcount <= '0;
-            vga_out.vsync  <= '0;
-            vga_out.vblnk  <= '0;
-            vga_out.hcount <= '0;
-            vga_out.hsync  <= '0;
-            vga_out.hblnk  <= '0;
-            vga_out.rgb    <= '0;
+            vga_out.vcount <= 0;
+            vga_out.vsync  <= 0;
+            vga_out.vblnk  <= 0;
+            vga_out.hcount <= 0;
+            vga_out.hsync  <= 0;
+            vga_out.hblnk  <= 0;
+            vga_out.rgb    <= 0;
         end else begin
-            vga_out.vcount <= vcount_in;
-            vga_out.vsync  <= vsync_in;
-            vga_out.vblnk  <= vblnk_in;
-            vga_out.hcount <= hcount_in;
-            vga_out.hsync  <= hsync_in;
-            vga_out.hblnk  <= hblnk_in;
+            vga_out.vcount <= vcount_d;
+            vga_out.vsync  <= vsync_d;
+            vga_out.vblnk  <= vblnk_d;
+            vga_out.hcount <= hcount_d;
+            vga_out.hsync  <= hsync_d;
+            vga_out.hblnk  <= hblnk_d;
             vga_out.rgb    <= rgb_nxt;
         end
     end
 
+
     always_comb begin
-        if(bg_pixel) begin
+        if (!hblnk_d && !vblnk_d) begin
             rgb_nxt = rgb_background;
         end else begin
-            rgb_nxt = 12'h8_8_8;
+            rgb_nxt = 12'h0_0_0;
         end
     end
 
-    
 endmodule

@@ -56,7 +56,7 @@ module top_vga_tb;
      */
 
     top_vga dut (
-        .clk(clk),
+        .clk65MHz(clk),
         .rst(rst),
         .vs(vs),
         .hs(hs),

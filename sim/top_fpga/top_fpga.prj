@@ -9,15 +9,20 @@
 # https://docs.xilinx.com/r/en-US/ug900-vivado-logic-simulation/Project-File-.prj-Syntax
 
 
-sv work ../../rtl/vga_pkg.sv \
+sv work ../../rtl/background/vga_pkg.sv \
         ../../rtl/vga_timing.sv \
-        ../../rtl/draw_bg.sv \
-        ../../rtl/draw_rect.sv \
+        ../../rtl/background/draw_bg.sv \
+        ../../rtl/background/image_rom.sv \
         ../../rtl/vga_if.sv \
         ../../rtl/top_vga.sv \
-        ../../fpga/rtl/top_vga_basys3.sv \
+        ../../rtl/players/image_rom_dog.sv \
+        ../../rtl/players/draw_player_dog.sv \
+        ../../rtl/players/image_rom_cat.sv \
+        ../../rtl/players/draw_player_cat.sv \
         ../common/tiff_writer.sv \
-        top_fpga_tb.sv
+        top_fpga_tb.sv \
+        ../../fpga/rtl/top_vga_basys3.sv
 
 # compile glbl module - required for IP simulation
-verilog work ../common/glbl.v
+verilog work ../common/glbl.v \
+                ../../fpga/rtl/clk_wiz_0_clk_wiz.v 

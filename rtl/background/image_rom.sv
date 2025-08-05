@@ -15,7 +15,7 @@
 
 module image_rom (
         input  logic clk ,
-        input  logic [11:0] address,  // address = {addry[5:0], addrx[5:0]}
+        input  logic [19:0] address,  // address = {addry[5:0], addrx[5:0]}
         output logic [11:0] rgb
     );
 
@@ -24,7 +24,7 @@ module image_rom (
      * Local variables and signals
      */
 
-    reg [22:0] rom [0:786431];
+    reg [11:0] rom [0:786431];
 
     
 
@@ -33,7 +33,7 @@ module image_rom (
      */
 
     /* Relative path from the simulation or synthesis working directory */
-    initial $readmemh("../../rtl/data/BG.dat", rom);
+    initial $readmemh("../../rtl/data/background/BG.dat", rom);
 
 
     /**

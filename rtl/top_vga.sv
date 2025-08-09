@@ -15,7 +15,7 @@
 module top_vga (
         input  logic clk65MHz,
         input  logic rst,
-    //    input  logic btnU,
+        input  logic btnU,
         input logic PS2Clk,
         input logic PS2Data,
         output logic vs,
@@ -180,7 +180,7 @@ module top_vga (
 
         .rgb_dog(rgb_dog),
         .dog_addr(dog_addr),
-        .vga_in     (vga_bg_if.vga_in),
+        .vga_in     (vga_rect_if.vga_in),
         .vga_out    (vga_dog_if.vga_out)
     );
 

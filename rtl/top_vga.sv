@@ -16,8 +16,12 @@ module top_vga (
         input  logic clk65MHz,
         input  logic rst,
         input  logic btnU,
-        input logic PS2Clk,
-        input logic PS2Data,
+        input  logic PS2Clk,
+        input  logic PS2Data,
+        input  logic SPACE_RX, 
+        input  logic ENTER_RX, 
+        output logic SPACE_TX, 
+        output logic ENTER_TX, 
         output logic vs,
         output logic hs,
         output logic [3:0] r,
@@ -72,6 +76,8 @@ module top_vga (
     logic [15:0] ps2_keycode;
     logic       ps2_key_valid;
     logic       space;
+    logic       enable_draw;
+    logic [1:0] state_dog;
 
 
     /**
@@ -103,12 +109,22 @@ module top_vga (
     draw_rectangle u_draw_rectangle (
         .clk(clk65MHz),
         .rst(rst),
-        .space(space),
+        .space(enable_draw),
         .rectangle_on(rectangle_on),
         .rgb_rectangle(rgb_rectangle),
         .vga_in(vga_bg_if.vga_out),
         .vga_out(vga_rect_if.vga_out)
     );
+
+    turn_local_fsm u_turn_local_fsm (
+        .clk(clk65MHz),
+        .rst(rst),
+        .space(space),
+        .enable_draw(enable_draw),
+        .index(state_dog),
+        .space_pin_tx(SPACE_TX),
+        .throw_enable()
+);
 
     PS2Receiver u_ps2_receiver (
         .clk        (clk65MHz),
@@ -187,7 +203,8 @@ module top_vga (
     image_rom_dog u_image_rom_dog (
         .clk(clk65MHz),
         .address(dog_addr),
-        .rgb(rgb_dog)
+        .rgb(rgb_dog),
+        .state(state_dog)
     );
 
 

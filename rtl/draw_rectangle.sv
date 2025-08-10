@@ -8,15 +8,45 @@ module draw_rectangle (
     vga_if.vga_out      vga_out
 );
 
+    localparam X_START     = 876;
+    localparam Y_START     = 400;
+    localparam Y_END       = 421; 
+    localparam MAX_WIDTH   = 128;
 
+    localparam integer STEP_INTERVAL = 1_234_177;
+
+    logic [9:0]  rect_width;
+    logic [31:0] step_counter;
+
+    always_ff @(posedge clk or posedge rst) begin
+        if (rst) begin
+            rect_width   <= 0;
+            step_counter <= 0;
+        end else begin
+            if (space) begin
+                if (rect_width < MAX_WIDTH) begin
+                    if (step_counter >= STEP_INTERVAL) begin
+                        rect_width   <= rect_width + 1;
+                        step_counter <= 0;
+                    end else begin
+                        step_counter <= step_counter + 1;
+                    end
+                end
+            end else begin
+                rect_width   <= 0;
+                step_counter <= 0;
+            end
+        end
+    end
 
     always_comb begin
-        if (space && vga_in.hcount >= 1   && vga_in.hcount < 158 &&
-            vga_in.vcount >= 400 && vga_in.vcount < 421) begin
-            rectangle_on = 1;
-            rgb_rectangle = 12'hF00;  // czerwony
+        if (space &&
+            vga_in.hcount >= X_START && vga_in.hcount < (X_START + rect_width) &&
+            vga_in.vcount >= Y_START && vga_in.vcount < Y_END) begin
+            rectangle_on  = 1;
+            rgb_rectangle = 12'hF00;
         end else begin
-            rectangle_on = 0;
+            rectangle_on  = 0;
             rgb_rectangle = vga_in.rgb;
         end
     end

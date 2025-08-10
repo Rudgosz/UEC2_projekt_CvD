@@ -128,17 +128,17 @@ set_property PACKAGE_PIN T18 [get_ports btnU]
 
 ##Pmod Header JA
 ##Sch name = JA1
-set_property PACKAGE_PIN J1 [get_ports {JA1}]
-	set_property IOSTANDARD LVCMOS33 [get_ports {JA1}]
+set_property PACKAGE_PIN J1 [get_ports {SPACE_RX}]
+	set_property IOSTANDARD LVCMOS33 [get_ports {SPACE_RX}]
 ##Sch name = JA2
-#set_property PACKAGE_PIN L2 [get_ports {JA[1]}]
-	#set_property IOSTANDARD LVCMOS33 [get_ports {JA[1]}]
+set_property PACKAGE_PIN L2 [get_ports {SPACE_TX}]
+	set_property IOSTANDARD LVCMOS33 [get_ports {SPACE_TX}]
 ##Sch name = JA3
-#set_property PACKAGE_PIN J2 [get_ports {JA[2]}]
-	#set_property IOSTANDARD LVCMOS33 [get_ports {JA[2]}]
+set_property PACKAGE_PIN J2 [get_ports {ENTER_RX}]
+	set_property IOSTANDARD LVCMOS33 [get_ports {ENTER_RX}]
 ##Sch name = JA4
-#set_property PACKAGE_PIN G2 [get_ports {JA[3]}]
-	#set_property IOSTANDARD LVCMOS33 [get_ports {JA[3]}]
+set_property PACKAGE_PIN G2 [get_ports {ENTER_TX}]
+	set_property IOSTANDARD LVCMOS33 [get_ports {ENTER_TX}]
 ##Sch name = JA7
 #set_property PACKAGE_PIN H1 [get_ports {JA[4]}]
 	#set_property IOSTANDARD LVCMOS33 [get_ports {JA[4]}]

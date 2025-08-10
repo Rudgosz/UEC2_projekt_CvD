@@ -33,7 +33,7 @@ module image_rom_dog (
      */
 
     always_ff @(posedge clk) begin
-        rgb <= rom[address + 2 * IMAGE_SIZE];
+        rgb <= rom[address + state * IMAGE_SIZE];
     end
 
 endmodule

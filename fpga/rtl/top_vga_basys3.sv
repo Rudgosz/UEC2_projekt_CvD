@@ -23,7 +23,10 @@ module top_vga_basys3 (
         output wire [3:0] vgaBlue,
         inout  wire PS2Clk,
         inout  wire PS2Data,
-        output wire JA1
+        output wire SPACE_RX,
+        output wire SPACE_TX,
+        output wire ENTER_RX,
+        output wire ENTER_TX
     );
 
     timeunit 1ns;
@@ -95,7 +98,11 @@ module top_vga_basys3 (
         .hs(Hsync),
         .vs(Vsync),
         .PS2Clk(PS2Clk),
-        .PS2Data(PS2Data)
+        .PS2Data(PS2Data),
+        .SPACE_RX(SPACE_RX),
+        .SPACE_TX(SPACE_TX),
+        .ENTER_RX(ENTER_RX),
+        .ENTER_TX(ENTER_TX)
     );
 
 endmodule

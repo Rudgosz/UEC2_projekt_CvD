@@ -39,6 +39,7 @@ set sv_files {
     ../rtl/keyboard/keyboard_controller.sv
     ../rtl/keyboard/PS2Receiver.sv
     ../rtl/draw_rectangle.sv
+    ../rtl/turn_local_fsm.sv
     rtl/top_vga_basys3.sv
     ../rtl/background/vga_pkg.sv
     ../rtl/background/draw_bg.sv

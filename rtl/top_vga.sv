@@ -53,6 +53,9 @@ module top_vga (
     // VGA signals from draw_rectangle
     vga_if vga_rect_if();
 
+    // VGA signals form draw_projectile
+    vga_if vga_projectile_if();
+
     // Keyboard signals
     logic throw_keyboard_trigger;
     logic [7:0] throw_keyboard_power;
@@ -79,14 +82,19 @@ module top_vga (
     logic       enable_draw;
     logic [1:0] state_dog;
 
+    //signals for throw_ctl
+    logic [11:0] x_pos;
+    logic [11:0] y_pos;
+
+
 
     /**
      * Signals assignments
      */
 
-    assign vs = vga_cat_if.vsync;
-    assign hs = vga_cat_if.hsync;
-    assign {r,g,b} = vga_cat_if.rgb[11:0];
+    assign vs = vga_projectile_if.vsync;
+    assign hs = vga_projectile_if.hsync;
+    assign {r,g,b} = vga_projectile_if.rgb[11:0];
 
     assign throw_keyboard_trigger = space;
 
@@ -123,7 +131,7 @@ module top_vga (
         .enable_draw(enable_draw),
         .index(state_dog),
         .space_pin_tx(SPACE_TX),
-        .throw_enable()
+        .throw_enable(throw_enable)
 );
 
     PS2Receiver u_ps2_receiver (
@@ -228,6 +236,23 @@ module top_vga (
         .clk(clk65MHz),
         .address(cat_addr),
         .rgb(rgb_cat)
+    );
+
+    throw_ctl u_throw_ctl (
+        .clk(clk65MHz),
+        .rst(rst),
+        .enable(throw_enable),
+        .x_pos(x_pos),
+        .y_pos(y_pos)
+    );
+
+    draw_projectile u_draw_projectile (
+        .clk(clk65MHz),
+        .rst(rst),
+        .x_pos(x_pos),
+        .y_pos(y_pos),
+        .vga_in(vga_cat_if.vga_in),
+        .vga_out(vga_projectile_if.vga_out)
     );
     
 endmodule

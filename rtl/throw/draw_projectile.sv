@@ -1,63 +1,67 @@
 module draw_projectile (
     input logic clk,
     input logic rst,
-    input logic [11:0] x_pos,  // Absolute X from throw_ctl (0 = center)
-    input logic [11:0] y_pos,  // Absolute Y from throw_ctl (0 = ground)
+    input logic [11:0] x_pos,
+    input logic [11:0] y_pos,
     vga_if.vga_in vga_in,
     vga_if.vga_out vga_out
 );
-    // Projectile parameters
-    localparam PROJ_WIDTH = 30;    // Projectile width in pixels
-    localparam PROJ_HEIGHT = 30;   // Projectile height in pixels
-    localparam PROJ_COLOR = 12'hF00; // Red color
-    
-    // Screen parameters (must match your actual resolution)
-    localparam SCREEN_WIDTH = 1024;
-    localparam SCREEN_HEIGHT = 768;
-    
-    // Calculate projectile boundaries
-    logic [11:0] proj_left, proj_right;
-    logic [11:0] proj_top, proj_bottom;
-    
-    always_comb begin
-        // Convert absolute coordinates to screen coordinates:
-        // X: 0 = center, positive = right
-        proj_left = (SCREEN_WIDTH/2) + x_pos - (PROJ_WIDTH/2);
-        proj_right = (SCREEN_WIDTH/2) + x_pos + (PROJ_WIDTH/2);
-        
-        // Y: 0 = ground level, positive = up (screen Y increases downward)
-        proj_top = (SCREEN_HEIGHT-1) - y_pos - (PROJ_HEIGHT/2);
-        proj_bottom = (SCREEN_HEIGHT-1) - y_pos + (PROJ_HEIGHT/2);
+
+    import vga_pkg::*;
+
+    localparam RECT_SIZE = 30;
+
+    logic [11:0] rgb_delay;
+    logic [10:0] vcount_delay;
+    logic vsync_delay;
+    logic vblnk_delay;
+    logic [10:0] hcount_delay;
+    logic hsync_delay;
+    logic hblnk_delay;
+
+    always_ff @(posedge clk) begin
+        if (rst) begin
+            vcount_delay <= '0;
+            vsync_delay  <= '0;
+            vblnk_delay  <= '0;
+            hcount_delay <= '0;
+            hsync_delay  <= '0;
+            hblnk_delay  <= '0;
+            rgb_delay    <= '0;
+        end else begin
+            vcount_delay <= vga_in.vcount;
+            vsync_delay  <= vga_in.vsync;
+            vblnk_delay  <= vga_in.vblnk;
+            hcount_delay <= vga_in.hcount;
+            hsync_delay  <= vga_in.hsync;
+            hblnk_delay  <= vga_in.hblnk;
+            rgb_delay    <= vga_in.rgb;
+        end
     end
 
     always_ff @(posedge clk) begin
         if (rst) begin
-            vga_out.rgb <= 0;
-        end
-        else begin
-            // Pass through all VGA timing signals
-            vga_out.hcount <= vga_in.hcount;
-            vga_out.hsync <= vga_in.hsync;
-            vga_out.hblnk <= vga_in.hblnk;
-            vga_out.vcount <= vga_in.vcount;
-            vga_out.vsync <= vga_in.vsync;
-            vga_out.vblnk <= vga_in.vblnk;
-            
-            if(vga_in.vblnk || vga_in.hblnk) begin            
-                vga_out.rgb <= 0; // Blanking period
-            end
-            else begin 
-                // Check if current pixel is within projectile
-                if((vga_in.hcount >= proj_left) && 
-                   (vga_in.hcount <= proj_right) &&
-                   (vga_in.vcount >= proj_top) && 
-                   (vga_in.vcount <= proj_bottom)) begin
-                    vga_out.rgb <= PROJ_COLOR;
-                end
-                else begin
-                    vga_out.rgb <= vga_in.rgb; // Background
-                end
-            end
+            vga_out.hcount <= 0;
+            vga_out.hsync  <= 0;
+            vga_out.hblnk  <= 0;
+            vga_out.vcount <= 0;
+            vga_out.vsync  <= 0;
+            vga_out.vblnk  <= 0;
+            vga_out.rgb    <= 0;
+        end else begin
+            vga_out.hcount <= hcount_delay;
+            vga_out.hsync  <= hsync_delay;
+            vga_out.hblnk  <= hblnk_delay;
+            vga_out.vcount <= vcount_delay;
+            vga_out.vsync  <= vsync_delay;
+            vga_out.vblnk  <= vblnk_delay;
+
+            if (hcount_delay >= HOR_PIXELS - x_pos && hcount_delay < HOR_PIXELS - x_pos + RECT_SIZE &&
+                vcount_delay >= VER_PIXELS - y_pos && vcount_delay < VER_PIXELS - y_pos + RECT_SIZE)
+                vga_out.rgb <= 12'hF00;
+            else
+                vga_out.rgb <= rgb_delay;
         end
     end
+
 endmodule

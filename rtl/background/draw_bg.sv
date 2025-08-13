@@ -14,6 +14,9 @@ module draw_bg (
     input  logic        rectangle_on,
     input  logic [11:0] rgb_rectangle,
 
+    input  logic        bar_on,
+    input  logic [11:0] rgb_bar,
+
     vga_if.vga_out vga_out
 );
 
@@ -83,6 +86,8 @@ module draw_bg (
                     rgb_nxt = rgb_background;
                 end else if (rectangle_on) begin
                     rgb_nxt = rgb_rectangle;
+                end else if (bar_on) begin
+                    rgb_nxt = rgb_bar;
                 end else begin
                     rgb_nxt = 12'h000;
                 end

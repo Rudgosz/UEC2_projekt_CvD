@@ -56,6 +56,9 @@ module top_vga (
     // VGA signals form draw_projectile
     vga_if vga_projectile_if();
 
+    // VGA signals from health_bars
+    vga_if vga_hp_if();
+
     // Keyboard signals
     logic throw_keyboard_trigger;
     logic [7:0] throw_keyboard_power;
@@ -103,6 +106,9 @@ module top_vga (
 
     logic rectangle_on;
     logic [11:0] rgb_rectangle;
+
+    logic bar_on;
+    logic [11:0] rgb_bar;
 
     /**
      * Submodules instances
@@ -182,6 +188,9 @@ module top_vga (
         .rectangle_on(rectangle_on),
         .rgb_rectangle(rgb_rectangle),
 
+        .bar_on(bar_on),
+        .rgb_bar(rgb_bar),
+
         .vga_out    (vga_bg_if.vga_out)
 
     );
@@ -251,8 +260,21 @@ module top_vga (
         .rst(rst),
         .x_pos(x_pos),
         .y_pos(y_pos),
-        .vga_in(vga_cat_if.vga_in),
+        .vga_in(vga_hp_if.vga_in),
         .vga_out(vga_projectile_if.vga_out)
+    );
+
+    health_bars u_health_bars(
+        .clk(clk65MHz),
+        .rst(rst),
+        .hit_cat(),
+        .hit_dog(),
+        .hp_cat(),
+        .hp_dog(),
+        .bar_on(bar_on),
+        .rgb_bar(rgb_bar),
+        .vga_in(vga_cat_if.vga_in),
+        .vga_out(vga_hp_if.vga_out)
     );
     
 endmodule

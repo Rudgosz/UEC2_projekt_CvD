@@ -35,6 +35,7 @@ set sv_files {
     ../rtl/vga_timing.sv
     ../rtl/vga_if.sv
     ../rtl/top_vga.sv
+    ../rtl/health_bars.sv
     ../rtl/game_controller.sv
     ../rtl/keyboard/keyboard_controller.sv
     ../rtl/keyboard/PS2Receiver.sv

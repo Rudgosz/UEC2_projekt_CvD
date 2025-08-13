@@ -256,7 +256,8 @@ module top_vga (
         .enable(throw_enable),
         .throw_force(throw_force),
         .x_pos(x_pos),
-        .y_pos(y_pos)
+        .y_pos(y_pos),
+        .hit_cat(hit_cat)
     );
 
     draw_projectile u_draw_projectile (
@@ -271,7 +272,7 @@ module top_vga (
     health_bars u_health_bars(
         .clk(clk65MHz),
         .rst(rst),
-        .hit_cat(),
+        .hit_cat(hit_cat),
         .hit_dog(),
         .hp_cat(),
         .hp_dog(),

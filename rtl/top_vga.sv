@@ -231,7 +231,7 @@ module top_vga (
     draw_player_cat u_draw_player_cat (
         .clk(clk65MHz),
         .rst,
-
+        .hit_cat(hit_cat),
         .turn_active(cat_turn),
         .throw_command(throw_command),
         .throw_power(throw_power_out),

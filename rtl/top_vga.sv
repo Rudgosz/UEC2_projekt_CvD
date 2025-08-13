@@ -106,6 +106,8 @@ module top_vga (
 
     logic rectangle_on;
     logic [11:0] rgb_rectangle;
+    logic [9:0]  throw_force;
+
 
     logic bar_on;
     logic [11:0] rgb_bar;
@@ -126,6 +128,7 @@ module top_vga (
         .space(enable_draw),
         .rectangle_on(rectangle_on),
         .rgb_rectangle(rgb_rectangle),
+        .throw_force(throw_force),
         .vga_in(vga_bg_if.vga_out),
         .vga_out(vga_rect_if.vga_out)
     );
@@ -251,6 +254,7 @@ module top_vga (
         .clk(clk65MHz),
         .rst(rst),
         .enable(throw_enable),
+        .throw_force(throw_force),
         .x_pos(x_pos),
         .y_pos(y_pos)
     );

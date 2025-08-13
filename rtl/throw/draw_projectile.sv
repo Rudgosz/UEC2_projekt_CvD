@@ -56,7 +56,7 @@ module draw_projectile (
             vga_out.vsync  <= vsync_delay;
             vga_out.vblnk  <= vblnk_delay;
 
-            if (hcount_delay >= HOR_PIXELS - x_pos && hcount_delay < HOR_PIXELS - x_pos + RECT_SIZE &&
+            if (hcount_delay >= HOR_PIXELS - x_pos && hcount_delay < HOR_PIXELS - x_pos + RECT_SIZE && 
                 vcount_delay >= VER_PIXELS - y_pos && vcount_delay < VER_PIXELS - y_pos + RECT_SIZE)
                 vga_out.rgb <= 12'hF00;
             else

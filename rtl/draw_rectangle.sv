@@ -4,6 +4,7 @@ module draw_rectangle (
     input  logic        space,
     output logic        rectangle_on,
     output logic [11:0] rgb_rectangle,
+    output logic [9:0]  throw_force,
     vga_if.vga_out      vga_in,
     vga_if.vga_out      vga_out
 );
@@ -17,12 +18,17 @@ module draw_rectangle (
 
     logic [9:0]  rect_width;
     logic [31:0] step_counter;
+    logic        space_prev;
 
     always_ff @(posedge clk or posedge rst) begin
         if (rst) begin
             rect_width   <= 0;
             step_counter <= 0;
+            throw_force  <= 0;
+            space_prev   <= 0;
         end else begin
+            space_prev <= space;
+
             if (space) begin
                 if (rect_width < MAX_WIDTH) begin
                     if (step_counter >= STEP_INTERVAL) begin
@@ -35,6 +41,10 @@ module draw_rectangle (
             end else begin
                 rect_width   <= 0;
                 step_counter <= 0;
+            end
+
+            if (space_prev && !space) begin
+                throw_force <= rect_width;
             end
         end
     end

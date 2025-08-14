@@ -22,8 +22,6 @@ module throw_ctl (
     localparam int WIND = 50;
 
 
-
-
     localparam WALL_X_LEFT = 490;
     localparam WALL_X_RIGHT = 534;
     localparam WALL_TOP = 241;
@@ -47,13 +45,14 @@ module throw_ctl (
 
     int scaled_force;
     int wind_offset;
+    int elapsed_fall;
 
     typedef enum logic [1:0] {ST_IDLE, ST_THROW, ST_FALL, ST_END} state_t;
     state_t state;
 
-    logic hit_cat_reg;      // sygnał wyjściowy
-    logic cat_in_range;     // sygnał pomocniczy — czy w tej chwili pocisk jest w kocie
-    logic cat_in_range_d;   // opóźniona wersja — poprzedni stan
+    logic hit_cat_reg;
+    logic cat_in_range;
+    logic cat_in_range_d;
 
     always_comb begin
         cat_in_range = (VER_PIXELS - y_pos >= CAT_TOP && VER_PIXELS - y_pos <= CAT_BOTTOM &&
@@ -67,7 +66,6 @@ module throw_ctl (
         end else begin
             cat_in_range_d <= cat_in_range;
             
-            // Wykrycie zbocza narastającego
             if (cat_in_range && !cat_in_range_d) begin
                 hit_cat_reg <= 1;
             end else begin
@@ -144,7 +142,7 @@ module throw_ctl (
                 end
 
                 ST_FALL: begin
-                    int elapsed_fall = ms_counter - time_0;
+                    elapsed_fall = ms_counter - time_0;
                     v_temp <= -GRAVITY * elapsed_fall;
                     y_pos <= ypos_0_fall - (GRAVITY * elapsed_fall * elapsed_fall) / 2;
                     
@@ -154,14 +152,13 @@ module throw_ctl (
                         state <= ST_END;
                     end
 
-                    //do poprawy
-                    if (VER_PIXELS - y_pos > WALL_TOP && HOR_PIXELS - x_pos <= WALL_X_RIGHT && HOR_PIXELS - x_pos >= WALL_X_LEFT) begin
+                    if (VER_PIXELS - y_pos > WALL_TOP && HOR_PIXELS - x_pos <= WALL_X_RIGHT + 15 && HOR_PIXELS - x_pos >= WALL_X_LEFT - 15) begin
                         x_pos <= x_pos;
                     end else begin
                         x_pos <= xpos_0 + (scaled_force + wind_offset) * elapsed_fall;
                     end
 
-                    if(VER_PIXELS - y_pos == WALL_TOP && HOR_PIXELS - x_pos <= WALL_X_RIGHT && HOR_PIXELS - x_pos >= WALL_X_LEFT) begin
+                    if(VER_PIXELS - y_pos <= WALL_TOP && VER_PIXELS - y_pos >= WALL_TOP - 15 && HOR_PIXELS - x_pos <= WALL_X_RIGHT + 15 && HOR_PIXELS - x_pos >= WALL_X_LEFT - 15) begin
                         state <= ST_END;
                     end
 
@@ -170,7 +167,7 @@ module throw_ctl (
                 end
 
                 ST_END: begin
-                    x_pos <= x_pos;
+                    x_pos <= MOUSE_XPOS;
                     y_pos <= MOUSE_YPOS;
 
                     if (!enable) begin

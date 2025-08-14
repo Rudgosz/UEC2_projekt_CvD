@@ -263,6 +263,7 @@ module top_vga (
     draw_projectile u_draw_projectile (
         .clk(clk65MHz),
         .rst(rst),
+        .enable(),
         .x_pos(x_pos),
         .y_pos(y_pos),
         .vga_in(vga_hp_if.vga_in),

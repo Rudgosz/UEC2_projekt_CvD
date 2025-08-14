@@ -1,23 +1,27 @@
 module draw_projectile (
-    input logic clk,
-    input logic rst,
-    input logic [11:0] x_pos,
-    input logic [11:0] y_pos,
-    vga_if.vga_in vga_in,
+    input  logic clk,
+    input  logic rst,
+    input  logic enable,
+    input  logic [11:0] x_pos,
+    input  logic [11:0] y_pos,
+    vga_if.vga_in  vga_in,
     vga_if.vga_out vga_out
 );
 
     import vga_pkg::*;
 
-    localparam RECT_SIZE = 30;
+    localparam int CIRCLE_DIAMETER = 30;
+    localparam int RADIUS = CIRCLE_DIAMETER / 2;
 
     logic [11:0] rgb_delay;
-    logic [10:0] vcount_delay;
-    logic vsync_delay;
-    logic vblnk_delay;
-    logic [10:0] hcount_delay;
-    logic hsync_delay;
-    logic hblnk_delay;
+    logic [10:0] vcount_delay, hcount_delay;
+    logic        vsync_delay,  vblnk_delay;
+    logic        hsync_delay,  hblnk_delay;
+
+    int center_x;
+    int center_y;
+    int dx;
+    int dy;
 
     always_ff @(posedge clk) begin
         if (rst) begin
@@ -56,9 +60,14 @@ module draw_projectile (
             vga_out.vsync  <= vsync_delay;
             vga_out.vblnk  <= vblnk_delay;
 
-            if (hcount_delay >= HOR_PIXELS - x_pos && hcount_delay < HOR_PIXELS - x_pos + RECT_SIZE && 
-                vcount_delay >= VER_PIXELS - y_pos && vcount_delay < VER_PIXELS - y_pos + RECT_SIZE)
-                vga_out.rgb <= 12'hF00;
+            center_x = HOR_PIXELS - x_pos + RADIUS;
+            center_y = VER_PIXELS - y_pos + RADIUS;
+
+            dx = hcount_delay - center_x;
+            dy = vcount_delay - center_y;
+
+            if (dx*dx + dy*dy <= RADIUS*RADIUS)
+                vga_out.rgb <= 12'hAAA;
             else
                 vga_out.rgb <= rgb_delay;
         end

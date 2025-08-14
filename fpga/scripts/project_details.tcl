@@ -36,11 +36,11 @@ set sv_files {
     ../rtl/vga_if.sv
     ../rtl/top_vga.sv
     ../rtl/health_bars.sv
-    ../rtl/game_controller.sv
+    ../rtl/game_fsm.sv
     ../rtl/keyboard/keyboard_controller.sv
     ../rtl/keyboard/PS2Receiver.sv
-    ../rtl/throw/throw_ctl.sv
-    ../rtl/throw/draw_projectile.sv
+    ../rtl/throw/throw_ctl_dog.sv
+    ../rtl/throw/draw_projectile_dog.sv
     ../rtl/draw_rectangle.sv
     ../rtl/turn_local_fsm.sv
     rtl/top_vga_basys3.sv

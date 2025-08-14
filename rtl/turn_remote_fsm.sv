@@ -1,9 +1,8 @@
-module turn_local_fsm (
+module turn_remote_fsm (
     input  logic clk,
     input  logic rst,
     input  logic space,
     input  logic whose_turn,
-    output logic enable_draw,
     output logic [1:0] index,
     output logic space_pin_tx,
     output logic throw_enable
@@ -21,9 +20,8 @@ module turn_local_fsm (
     logic [31:0] counter;
 
     always_ff @(posedge clk) begin
-        if (rst) begin : seq_rst_blk
+        if (rst) begin
             state        <= IDLE;
-            enable_draw  <= 0;
             index        <= 0;
             throw_enable <= 0;
             counter      <= 0;
@@ -31,18 +29,16 @@ module turn_local_fsm (
         end
         else begin
 
-            if (!whose_turn) begin
+            if (whose_turn) begin
                 state        <= IDLE;
-                enable_draw  <= 0;
                 index        <= 0;
                 throw_enable <= 0;
                 counter      <= 0;
                 space_pin_tx <= 0;
             end else begin
-
+                
                 case (state)
                     IDLE: begin
-                        enable_draw  <= 0;
                         index        <= 0;
                         space_pin_tx <= 0;
                         throw_enable <= 0;
@@ -54,7 +50,6 @@ module turn_local_fsm (
                     end
 
                     SP1: begin
-                        enable_draw  <= 1;
                         index        <= 1;
                         space_pin_tx <= 1;
                         throw_enable <= 0;
@@ -66,7 +61,6 @@ module turn_local_fsm (
                     end
 
                     SP0: begin
-                        enable_draw  <= 0;
                         index        <= 2;
                         space_pin_tx <= 0;
                         throw_enable <= 1;
@@ -80,7 +74,6 @@ module turn_local_fsm (
                     end
 
                     SP0_2: begin
-                        enable_draw  <= 0;
                         index        <= 2;
                         space_pin_tx <= 0;
                         throw_enable <= 0;

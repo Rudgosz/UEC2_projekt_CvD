@@ -1,4 +1,4 @@
-module draw_projectile (
+module draw_projectile_cat (
     input  logic clk,
     input  logic rst,
     input  logic enable,

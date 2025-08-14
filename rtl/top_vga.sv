@@ -16,6 +16,10 @@ module top_vga (
         input  logic clk65MHz,
         input  logic rst,
         input  logic btnU,
+        input  logic btn_space_local,
+        input  logic btn_enter_local,
+        input  logic btn_space_remote,
+        input  logic btn_enter_remote,
         input  logic PS2Clk,
         input  logic PS2Data,
         input  logic SPACE_RX, 
@@ -84,6 +88,7 @@ module top_vga (
     logic       space;
     logic       enable_draw;
     logic [1:0] state_dog;
+    logic [1:0] state_cat;
 
     //signals for throw_ctl
     logic [11:0] x_pos;
@@ -112,9 +117,43 @@ module top_vga (
     logic bar_on;
     logic [11:0] rgb_bar;
 
+    logic [9:0] hp_local;
+    logic [9:0] hp_remote;
+
     /**
      * Submodules instances
      */
+
+    game_fsm u_game_fsm (
+        .clk(clk65MHz),
+        .rst(rst),
+        .enter_pressed_local (btn_enter_local),
+        .enter_pressed_remote(btn_enter_remote),
+        .turn_done(turn_done),
+        .hp_local(hp_local),
+        .hp_remote(hp_remote),
+        .whose_turn(whose_turn)
+    );
+
+    turn_local_fsm u_turn_local_fsm (
+        .clk(clk65MHz),
+        .rst(rst),
+        .whose_turn(whose_turn),
+        .space(space),
+        .enable_draw(enable_draw),
+        .index(state_dog),
+        .space_pin_tx(SPACE_TX),
+        .throw_enable(throw_enable)
+    );
+
+    // turn_remote_fsm u_turn_remote_fsm (
+    //     .clk(clk65MHz),
+    //     .rst(rst),
+    //     .whose_turn(whose_turn),
+    //     .space(btn_space_remote),
+    //     .index(state_cat),
+    //     .throw_enable(throw_enable)
+    // );
 
     keyboard_controller u_keyboard (
         .clk(clk65MHz),
@@ -132,16 +171,6 @@ module top_vga (
         .vga_in(vga_bg_if.vga_out),
         .vga_out(vga_rect_if.vga_out)
     );
-
-    turn_local_fsm u_turn_local_fsm (
-        .clk(clk65MHz),
-        .rst(rst),
-        .space(space),
-        .enable_draw(enable_draw),
-        .index(state_dog),
-        .space_pin_tx(SPACE_TX),
-        .throw_enable(throw_enable)
-);
 
     PS2Receiver u_ps2_receiver (
         .clk        (clk65MHz),
@@ -162,18 +191,7 @@ module top_vga (
         .hblnk  (hblnk_tim)
     );
 
-    game_controller u_game_controller (
-        .clk(clk65MHz),
-        .rst,
-        .throw_trigger      (throw_keyboard_trigger),
-        .throw_power        (throw_keyboard_power),
-        .cat_throw_complete (cat_throw_complete),
-        .dog_throw_complete (dog_throw_complete),
-        .cat_turn           (cat_turn),
-        .dog_turn           (dog_turn),
-        .throw_command      (throw_command),
-        .power_out          (throw_power_out)
-    );
+    
 
     draw_bg u_draw_bg (
         .clk(clk65MHz),
@@ -247,10 +265,11 @@ module top_vga (
     image_rom_cat u_image_rom_cat (
         .clk(clk65MHz),
         .address(cat_addr),
+        .state(state_cat),
         .rgb(rgb_cat)
     );
 
-    throw_ctl u_throw_ctl (
+    throw_ctl_dog u_throw_ctl (
         .clk(clk65MHz),
         .rst(rst),
         .enable(throw_enable),
@@ -260,7 +279,7 @@ module top_vga (
         .hit_cat(hit_cat)
     );
 
-    draw_projectile u_draw_projectile (
+    draw_projectile_dog u_draw_projectile (
         .clk(clk65MHz),
         .rst(rst),
         .enable(),

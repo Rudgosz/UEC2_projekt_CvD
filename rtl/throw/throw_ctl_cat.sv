@@ -1,6 +1,6 @@
 `timescale 1 ns / 1 ps
 
-module throw_ctl (
+module throw_ctl_cat (
     input  logic clk,
     input  logic enable,
     input  logic rst,

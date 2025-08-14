@@ -57,24 +57,38 @@ module draw_rectangle (
             vga_in.vcount >= Y_START && vga_in.vcount < Y_END) begin
             rectangle_on  = 1;
             rgb_rectangle = 12'hF00;
-        
-        end else if ( space &&
-            ((vga_in.hcount >= X_START && vga_in.hcount < (X_START + MAX_WIDTH) &&
-             (vga_in.vcount >= Y_START && vga_in.vcount < (Y_START + BORDER_THICKNESS) ||
-              vga_in.vcount >= (Y_END - BORDER_THICKNESS) && vga_in.vcount < Y_END)) ||
-            (vga_in.vcount >= Y_START && vga_in.vcount < Y_END &&
-             (vga_in.hcount >= X_START && vga_in.hcount < (X_START + BORDER_THICKNESS) ||
-              vga_in.hcount >= (X_START + MAX_WIDTH - BORDER_THICKNESS) && 
-              vga_in.hcount < (X_START + MAX_WIDTH))))
-        ) begin
+
+        end else if (space && (
+                (vga_in.hcount >= (X_START - BORDER_THICKNESS) &&
+                vga_in.hcount <  (X_START + MAX_WIDTH + BORDER_THICKNESS) &&
+                vga_in.vcount >= (Y_START - BORDER_THICKNESS) &&
+                vga_in.vcount <  Y_START) ||
+
+                (vga_in.hcount >= (X_START - BORDER_THICKNESS) &&
+                vga_in.hcount <  (X_START + MAX_WIDTH + BORDER_THICKNESS) &&
+                vga_in.vcount >= Y_END &&
+                vga_in.vcount <  (Y_END + BORDER_THICKNESS)) ||
+
+                (vga_in.vcount >= (Y_START - BORDER_THICKNESS) &&
+                vga_in.vcount <  (Y_END + BORDER_THICKNESS) &&
+                vga_in.hcount >= (X_START - BORDER_THICKNESS) &&
+                vga_in.hcount <  X_START) ||
+
+                (vga_in.vcount >= (Y_START - BORDER_THICKNESS) &&
+                vga_in.vcount <  (Y_END + BORDER_THICKNESS) &&
+                vga_in.hcount >= (X_START + MAX_WIDTH) &&
+                vga_in.hcount <  (X_START + MAX_WIDTH + BORDER_THICKNESS))
+        )) begin
             rectangle_on  = 1;
-            rgb_rectangle = 12'h00F;
-        
+            rgb_rectangle = 12'h000;
+
         end else begin
             rectangle_on  = 0;
             rgb_rectangle = vga_in.rgb;
         end
     end
+
+
 
     assign vga_out.hcount = vga_in.hcount;
     assign vga_out.vcount = vga_in.vcount;

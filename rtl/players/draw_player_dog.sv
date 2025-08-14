@@ -109,7 +109,7 @@ module draw_player_dog (
 
 
     always_comb begin
-        if (inside_dog && rgb_dog != 12'h0F0) // czarne tło
+        if (inside_dog && rgb_dog != 12'h0F0)
             rgb_nxt = rgb_dog;
         else
             rgb_nxt = rgb_in_d;

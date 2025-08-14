@@ -7,15 +7,15 @@ module throw_ctl_dog (
     input  logic [9:0] throw_force,
     output logic signed [11:0] x_pos,
     output logic signed [11:0] y_pos,
-    output logic hit_cat
+    output logic hit_dog
 );
 
     import vga_pkg::*;
 
     localparam int INITIAL_VELOCITY = 27;
     localparam int GRAVITY = 1;
-    localparam int MOUSE_XPOS = 140;
-    localparam int MOUSE_YPOS = 350;
+    localparam int MOUSE_XPOS_DOG = 140;
+    localparam int MOUSE_YPOS_DOG = 350;
     localparam int IMAGE_Y_END = 700;
 
     localparam int INIT_FORCE = 18;
@@ -27,10 +27,10 @@ module throw_ctl_dog (
     localparam WALL_TOP = 241;
     localparam WALL_BOTTOM = 768;
 
-    localparam CAT_X_LEFT = 0;
-    localparam CAT_X_RIGHT = 157;
-    localparam CAT_TOP = 427;
-    localparam CAT_BOTTOM = 525;
+    localparam DOG_X_LEFT = 800;
+    localparam DOG_X_RIGHT = 850;
+    localparam DOG_TOP = 427;
+    localparam DOG_BOTTOM = 525;
     
     
 
@@ -50,31 +50,31 @@ module throw_ctl_dog (
     typedef enum logic [1:0] {ST_IDLE, ST_THROW, ST_FALL, ST_END} state_t;
     state_t state;
 
-    logic hit_cat_reg;
-    logic cat_in_range;
-    logic cat_in_range_d;
+    logic hit_dog_reg;
+    logic dog_in_range;
+    logic dog_in_range_d;
 
     always_comb begin
-        cat_in_range = (VER_PIXELS - y_pos >= CAT_TOP && VER_PIXELS - y_pos <= CAT_BOTTOM &&
-                        HOR_PIXELS - x_pos <= CAT_X_RIGHT && HOR_PIXELS - x_pos >= CAT_X_LEFT);
+        dog_in_range = (VER_PIXELS - y_pos >= DOG_TOP && VER_PIXELS - y_pos <= DOG_BOTTOM &&
+                        HOR_PIXELS - x_pos <= DOG_X_RIGHT && HOR_PIXELS - x_pos >= DOG_X_LEFT);
     end
 
     always_ff @(posedge clk or posedge rst) begin
         if (rst) begin
-            cat_in_range_d <= 0;
-            hit_cat_reg <= 0;
+            dog_in_range_d <= 0;
+            hit_dog_reg <= 0;
         end else begin
-            cat_in_range_d <= cat_in_range;
+            dog_in_range_d <= dog_in_range;
             
-            if (cat_in_range && !cat_in_range_d) begin
-                hit_cat_reg <= 1;
+            if (dog_in_range && !dog_in_range_d) begin
+                hit_dog_reg <= 1;
             end else begin
-                hit_cat_reg <= 0;
+                hit_dog_reg <= 0;
             end
         end
     end
 
-    assign hit_cat = hit_cat_reg;
+    assign hit_dog = hit_dog_reg;
 
 
     always_comb begin
@@ -104,24 +104,24 @@ module throw_ctl_dog (
     always_ff @(posedge clk) begin
         if (rst) begin
             state <= ST_IDLE;
-            x_pos <= MOUSE_XPOS;
-            y_pos <= MOUSE_YPOS;
+            x_pos <= MOUSE_XPOS_DOG;
+            y_pos <= MOUSE_YPOS_DOG;
             time_0 <= 0;
             v_0 <= 0;
             v_temp <= 0;
-            ypos_0 <= MOUSE_YPOS;
-            xpos_0 <= MOUSE_XPOS;
-            ypos_0_fall <= MOUSE_YPOS;
+            ypos_0 <= MOUSE_YPOS_DOG;
+            xpos_0 <= MOUSE_XPOS_DOG;
+            ypos_0_fall <= MOUSE_YPOS_DOG;
         end else begin
             case (state)
                 ST_IDLE: begin
-                    x_pos <= MOUSE_XPOS;
-                    y_pos <= MOUSE_YPOS;
+                    x_pos <= MOUSE_XPOS_DOG;
+                    y_pos <= MOUSE_YPOS_DOG;
                     if (enable) begin
                         state <= ST_THROW;
                         time_0 <= ms_counter;
-                        ypos_0 <= MOUSE_YPOS;
-                        xpos_0 <= MOUSE_XPOS;
+                        ypos_0 <= MOUSE_YPOS_DOG;
+                        xpos_0 <= MOUSE_XPOS_DOG;
                         v_0 <= INITIAL_VELOCITY;
                         v_temp <= INITIAL_VELOCITY;
                     end
@@ -148,7 +148,7 @@ module throw_ctl_dog (
                     
 
                     if (y_pos <= VER_PIXELS - 525) begin
-                        y_pos <= MOUSE_YPOS;
+                        y_pos <= MOUSE_YPOS_DOG;
                         state <= ST_END;
                     end
 
@@ -167,8 +167,8 @@ module throw_ctl_dog (
                 end
 
                 ST_END: begin
-                    x_pos <= MOUSE_XPOS;
-                    y_pos <= MOUSE_YPOS;
+                    x_pos <= MOUSE_XPOS_DOG;
+                    y_pos <= MOUSE_YPOS_DOG;
 
                     if (!enable) begin
                         state <= ST_IDLE;

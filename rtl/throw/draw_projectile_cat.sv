@@ -1,7 +1,6 @@
 module draw_projectile_cat (
     input  logic clk,
     input  logic rst,
-    input  logic enable,
     input  logic [11:0] x_pos,
     input  logic [11:0] y_pos,
     vga_if.vga_in  vga_in,
@@ -18,10 +17,10 @@ module draw_projectile_cat (
     logic        vsync_delay,  vblnk_delay;
     logic        hsync_delay,  hblnk_delay;
 
-    int center_x;
-    int center_y;
-    int dx;
-    int dy;
+    int center_x_cat;
+    int center_y_cat;
+    int dx_cat;
+    int dy_cat;
 
     always_ff @(posedge clk) begin
         if (rst) begin
@@ -60,14 +59,14 @@ module draw_projectile_cat (
             vga_out.vsync  <= vsync_delay;
             vga_out.vblnk  <= vblnk_delay;
 
-            center_x = HOR_PIXELS - x_pos + RADIUS;
-            center_y = VER_PIXELS - y_pos + RADIUS;
+            center_x_cat <= HOR_PIXELS - x_pos + RADIUS;
+            center_y_cat <= VER_PIXELS - y_pos + RADIUS;
 
-            dx = hcount_delay - center_x;
-            dy = vcount_delay - center_y;
+            dx_cat <= hcount_delay - center_x_cat;
+            dy_cat <= vcount_delay - center_y_cat;
 
-            if (dx*dx + dy*dy <= RADIUS*RADIUS)
-                vga_out.rgb <= 12'hAAA;
+            if (dx_cat*dx_cat + dy_cat*dy_cat <= RADIUS*RADIUS)
+                vga_out.rgb <= 12'hF00;
             else
                 vga_out.rgb <= rgb_delay;
         end

@@ -40,9 +40,12 @@ set sv_files {
     ../rtl/keyboard/keyboard_controller.sv
     ../rtl/keyboard/PS2Receiver.sv
     ../rtl/throw/throw_ctl_dog.sv
+    ../rtl/throw/throw_ctl_cat.sv
     ../rtl/throw/draw_projectile_dog.sv
+    ../rtl/throw/draw_projectile_cat.sv
     ../rtl/draw_rectangle.sv
     ../rtl/turn_local_fsm.sv
+    ../rtl/turn_remote_fsm.sv
     rtl/top_vga_basys3.sv
     ../rtl/background/vga_pkg.sv
     ../rtl/background/draw_bg.sv

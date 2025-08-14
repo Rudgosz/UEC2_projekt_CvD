@@ -11,11 +11,14 @@
 
 sv work ../../rtl/background/vga_pkg.sv \
         ../../rtl/vga_timing.sv \
-        ../../rtl/throw/throw_ctl.sv \
-        ../../rtl/throw/draw_projectile.sv \
+        ../../rtl/throw/throw_ctl_cat.sv \
+        ../../rtl/throw/throw_ctl_dog.sv \
+        ../../rtl/throw/draw_projectile_cat.sv \
+        ../../rtl/throw/draw_projectile_dog.sv \
         ../../rtl/turn_local_fsm.sv \
+        ../../rtl/turn_remote_fsm.sv \
         ../../rtl/health_bars.sv \
-        ../../rtl/game_controller.sv \
+        ../../rtl/game_fsm.sv \
         ../../rtl/background/draw_bg.sv \
         ../../rtl/background/image_rom.sv \
         ../../rtl/vga_if.sv \

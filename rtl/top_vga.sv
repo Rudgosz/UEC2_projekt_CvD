@@ -58,7 +58,10 @@ module top_vga (
     vga_if vga_rect_if();
 
     // VGA signals form draw_projectile
-    vga_if vga_projectile_if();
+    vga_if vga_projectile_dog_if();
+    
+    vga_if vga_projectile_cat_if();
+    vga_if vga_projectile_dog_reg_if();
 
     // VGA signals from health_bars
     vga_if vga_hp_if();
@@ -91,8 +94,11 @@ module top_vga (
     logic [1:0] state_cat;
 
     //signals for throw_ctl
-    logic [11:0] x_pos;
-    logic [11:0] y_pos;
+    logic [11:0] x_pos_dog;
+    logic [11:0] y_pos_dog;
+
+    logic [11:0] x_pos_cat;
+    logic [11:0] y_pos_cat;
 
 
 
@@ -100,9 +106,9 @@ module top_vga (
      * Signals assignments
      */
 
-    assign vs = vga_projectile_if.vsync;
-    assign hs = vga_projectile_if.hsync;
-    assign {r,g,b} = vga_projectile_if.rgb[11:0];
+    assign vs = vga_projectile_dog_if.vsync;
+    assign hs = vga_projectile_dog_if.hsync;
+    assign {r,g,b} = vga_projectile_dog_if.rgb[11:0];
 
     assign throw_keyboard_trigger = space;
 
@@ -111,7 +117,8 @@ module top_vga (
 
     logic rectangle_on;
     logic [11:0] rgb_rectangle;
-    logic [9:0]  throw_force;
+    logic [9:0]  throw_force_dog;
+    logic [9:0]  throw_force_cat;
 
 
     logic bar_on;
@@ -120,9 +127,15 @@ module top_vga (
     logic [9:0] hp_local;
     logic [9:0] hp_remote;
 
+    logic throw_enable_dog;
+    logic throw_enable_cat;
+
+    logic hit_cat;
+    logic hit_dog;
     /**
      * Submodules instances
      */
+
 
     game_fsm u_game_fsm (
         .clk(clk65MHz),
@@ -143,17 +156,17 @@ module top_vga (
         .enable_draw(enable_draw),
         .index(state_dog),
         .space_pin_tx(SPACE_TX),
-        .throw_enable(throw_enable)
+        .throw_enable(throw_enable_dog)
     );
 
-    // turn_remote_fsm u_turn_remote_fsm (
-    //     .clk(clk65MHz),
-    //     .rst(rst),
-    //     .whose_turn(whose_turn),
-    //     .space(btn_space_remote),
-    //     .index(state_cat),
-    //     .throw_enable(throw_enable)
-    // );
+    turn_remote_fsm u_turn_remote_fsm (
+        .clk(clk65MHz),
+        .rst(rst),
+        .whose_turn(whose_turn),
+        .space(btn_space_remote),
+        .index(state_cat),
+        .throw_enable(throw_enable_cat)
+    );
 
     keyboard_controller u_keyboard (
         .clk(clk65MHz),
@@ -167,7 +180,7 @@ module top_vga (
         .space(enable_draw),
         .rectangle_on(rectangle_on),
         .rgb_rectangle(rgb_rectangle),
-        .throw_force(throw_force),
+        .throw_force(throw_force_dog),
         .vga_in(vga_bg_if.vga_out),
         .vga_out(vga_rect_if.vga_out)
     );
@@ -269,25 +282,45 @@ module top_vga (
         .rgb(rgb_cat)
     );
 
-    throw_ctl_dog u_throw_ctl (
+    throw_ctl_dog u_throw_ctl_dog (
         .clk(clk65MHz),
         .rst(rst),
-        .enable(throw_enable),
-        .throw_force(throw_force),
-        .x_pos(x_pos),
-        .y_pos(y_pos),
-        .hit_cat(hit_cat)
+        .enable(throw_enable_dog),
+        .throw_force(throw_force_dog),
+        .x_pos(x_pos_dog),
+        .y_pos(y_pos_dog),
+        .hit_dog(hit_dog)
     );
 
-    draw_projectile_dog u_draw_projectile (
+    // throw_ctl_cat u_throw_ctl_cat (
+    //     .clk(clk65MHz),
+    //     .rst(rst),
+    //     .enable(throw_enable_cat),
+    //     .throw_force(throw_force_cat),
+    //     .x_pos(x_pos_cat),
+    //     .y_pos(y_pos_cat),
+    //     .hit_cat(hit_cat)
+    // );
+
+    draw_projectile_dog u_draw_projectile_dog (
         .clk(clk65MHz),
         .rst(rst),
-        .enable(),
-        .x_pos(x_pos),
-        .y_pos(y_pos),
+        .x_pos(x_pos_dog),
+        .y_pos(y_pos_dog),
         .vga_in(vga_hp_if.vga_in),
-        .vga_out(vga_projectile_if.vga_out)
+        .vga_out(vga_projectile_dog_if.vga_out)
     );
+
+    
+
+    // draw_projectile_cat u_draw_projectile_cat (
+    //     .clk(clk65MHz),
+    //     .rst(rst),
+    //     .x_pos(x_pos_cat),
+    //     .y_pos(y_pos_cat),
+    //     .vga_in(vga_hp_if.vga_in),
+    //     .vga_out(vga_projectile_cat_if.vga_out)
+    // );
 
     health_bars u_health_bars(
         .clk(clk65MHz),

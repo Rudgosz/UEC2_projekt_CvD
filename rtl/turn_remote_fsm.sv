@@ -4,7 +4,6 @@ module turn_remote_fsm (
     input  logic space,
     input  logic whose_turn,
     output logic [1:0] index,
-    output logic space_pin_tx,
     output logic throw_enable
 );
 
@@ -25,7 +24,6 @@ module turn_remote_fsm (
             index        <= 0;
             throw_enable <= 0;
             counter      <= 0;
-            space_pin_tx <= 0;
         end
         else begin
 
@@ -34,13 +32,11 @@ module turn_remote_fsm (
                 index        <= 0;
                 throw_enable <= 0;
                 counter      <= 0;
-                space_pin_tx <= 0;
             end else begin
                 
                 case (state)
                     IDLE: begin
                         index        <= 0;
-                        space_pin_tx <= 0;
                         throw_enable <= 0;
                         counter      <= 0;
                         if (space)
@@ -51,7 +47,6 @@ module turn_remote_fsm (
 
                     SP1: begin
                         index        <= 1;
-                        space_pin_tx <= 1;
                         throw_enable <= 0;
                         counter      <= 0;
                         if (!space)
@@ -62,7 +57,6 @@ module turn_remote_fsm (
 
                     SP0: begin
                         index        <= 2;
-                        space_pin_tx <= 0;
                         throw_enable <= 1;
                         if (counter < ONE_SECOND-1) begin
                             counter <= counter + 1;
@@ -75,7 +69,6 @@ module turn_remote_fsm (
 
                     SP0_2: begin
                         index        <= 2;
-                        space_pin_tx <= 0;
                         throw_enable <= 0;
                         counter      <= 0;
                         state        <= IDLE;

@@ -14,8 +14,8 @@ module throw_ctl_cat (
 
     localparam int INITIAL_VELOCITY = 27;
     localparam int GRAVITY = 1;
-    localparam int MOUSE_XPOS = 140;
-    localparam int MOUSE_YPOS = 350;
+    localparam int MOUSE_XPOS_CAT = 884;
+    localparam int MOUSE_YPOS_CAT = 350;
     localparam int IMAGE_Y_END = 700;
 
     localparam int INIT_FORCE = 18;
@@ -104,24 +104,24 @@ module throw_ctl_cat (
     always_ff @(posedge clk) begin
         if (rst) begin
             state <= ST_IDLE;
-            x_pos <= MOUSE_XPOS;
-            y_pos <= MOUSE_YPOS;
+            x_pos <= MOUSE_XPOS_CAT;
+            y_pos <= MOUSE_YPOS_CAT;
             time_0 <= 0;
             v_0 <= 0;
             v_temp <= 0;
-            ypos_0 <= MOUSE_YPOS;
-            xpos_0 <= MOUSE_XPOS;
-            ypos_0_fall <= MOUSE_YPOS;
+            ypos_0 <= MOUSE_YPOS_CAT;
+            xpos_0 <= MOUSE_XPOS_CAT;
+            ypos_0_fall <= MOUSE_YPOS_CAT;
         end else begin
             case (state)
                 ST_IDLE: begin
-                    x_pos <= MOUSE_XPOS;
-                    y_pos <= MOUSE_YPOS;
+                    x_pos <= MOUSE_XPOS_CAT;
+                    y_pos <= MOUSE_YPOS_CAT;
                     if (enable) begin
                         state <= ST_THROW;
                         time_0 <= ms_counter;
-                        ypos_0 <= MOUSE_YPOS;
-                        xpos_0 <= MOUSE_XPOS;
+                        ypos_0 <= MOUSE_YPOS_CAT;
+                        xpos_0 <= MOUSE_XPOS_CAT;
                         v_0 <= INITIAL_VELOCITY;
                         v_temp <= INITIAL_VELOCITY;
                     end
@@ -148,7 +148,7 @@ module throw_ctl_cat (
                     
 
                     if (y_pos <= VER_PIXELS - 525) begin
-                        y_pos <= MOUSE_YPOS;
+                        y_pos <= MOUSE_YPOS_CAT;
                         state <= ST_END;
                     end
 
@@ -167,8 +167,8 @@ module throw_ctl_cat (
                 end
 
                 ST_END: begin
-                    x_pos <= MOUSE_XPOS;
-                    y_pos <= MOUSE_YPOS;
+                    x_pos <= MOUSE_XPOS_CAT;
+                    y_pos <= MOUSE_YPOS_CAT;
 
                     if (!enable) begin
                         state <= ST_IDLE;

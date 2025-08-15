@@ -111,9 +111,9 @@ module top_vga (
      * Signals assignments
      */
 
-    assign vs = vga_projectile_cat_if.vsync;
-    assign hs = vga_projectile_cat_if.hsync;
-    assign {r,g,b} = vga_projectile_cat_if.rgb[11:0];
+    assign vs = vga_start_if.vsync;
+    assign hs = vga_start_if.hsync;
+    assign {r,g,b} = vga_start_if.rgb[11:0];
 
     assign throw_keyboard_trigger = space;
 
@@ -193,7 +193,7 @@ module top_vga (
         .game_state(game_state),
         .start_on(start_on),
         .rgb_start(rgb_start),
-        .vga_in(vga_projectile_dog_if.vga_out),
+        .vga_in(vga_projectile_cat_if.vga_out),
         .vga_out(vga_start_if.vga_out)
     );
 
@@ -341,7 +341,7 @@ module top_vga (
         .rst(rst),
         .x_pos(x_pos_cat),
         .y_pos(y_pos_cat),
-        .vga_in(vga_start_if.vga_in),
+        .vga_in(vga_projectile_dog_if.vga_in),
         .vga_out(vga_projectile_cat_if.vga_out)
     );
 

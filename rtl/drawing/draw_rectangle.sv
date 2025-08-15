@@ -5,7 +5,7 @@ module draw_rectangle (
     output logic        rectangle_on,
     output logic [11:0] rgb_rectangle,
     output logic [9:0]  throw_force,
-    vga_if.vga_out      vga_in,
+    vga_if.vga_in      vga_in,
     vga_if.vga_out      vga_out
 );
 

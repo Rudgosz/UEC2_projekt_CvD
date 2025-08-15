@@ -196,7 +196,7 @@ module top_vga (
         .game_state(game_state),
         .start_on(start_on),
         .rgb_start(rgb_start),
-        .vga_in(vga_over_if.vga_out),
+        .vga_in(vga_over_if.vga_in),
         .vga_out(vga_start_if.vga_out)
     );
 
@@ -206,7 +206,7 @@ module top_vga (
         .game_state(game_state),
         .over_on(over_on),
         .rgb_over(rgb_over),
-        .vga_in(vga_projectile_cat_if.vga_out),
+        .vga_in(vga_projectile_cat_if.vga_in),
         .vga_out(vga_over_if.vga_out)
     );
 
@@ -217,7 +217,7 @@ module top_vga (
         .rectangle_on(rectangle_on),
         .rgb_rectangle(rgb_rectangle),
         .throw_force(throw_force_dog),
-        .vga_in(vga_bg_if.vga_out),
+        .vga_in(vga_bg_if.vga_in),
         .vga_out(vga_rect_if.vga_out)
     );
 

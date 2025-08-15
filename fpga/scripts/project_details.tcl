@@ -43,6 +43,7 @@ set sv_files {
     ../rtl/drawing/draw_bg.sv
     ../rtl/drawing/image_rom.sv    
     ../rtl/drawing/draw_start.sv    
+    ../rtl/drawing/draw_over.sv    
   
     ../rtl/keyboard/keyboard_controller.sv
     ../rtl/keyboard/PS2Receiver.sv

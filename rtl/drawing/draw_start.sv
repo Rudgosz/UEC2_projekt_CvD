@@ -5,7 +5,7 @@ module draw_start (
     input  logic        game_state,
     output logic        start_on,
     output logic [11:0] rgb_start,
-    vga_if.vga_out      vga_in,
+    vga_if.vga_in      vga_in,
     vga_if.vga_out      vga_out
 );
 

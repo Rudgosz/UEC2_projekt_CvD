@@ -4,7 +4,7 @@ module draw_over (
     input  logic [2:0]  game_state,
     output logic        over_on,
     output logic [11:0] rgb_over,
-    vga_if.vga_out      vga_in,
+    vga_if.vga_in      vga_in,
     vga_if.vga_out      vga_out
 );
 

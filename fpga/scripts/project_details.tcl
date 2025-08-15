@@ -35,21 +35,26 @@ set sv_files {
     ../rtl/vga_timing.sv
     ../rtl/vga_if.sv
     ../rtl/top_vga.sv
-    ../rtl/health_bars.sv
-    ../rtl/game_fsm.sv
+    rtl/top_vga_basys3.sv
+
+    ../rtl/drawing/health_bars.sv
+    ../rtl/drawing/draw_rectangle.sv
+    ../rtl/drawing/draw_bg.sv
+    ../rtl/drawing/image_rom.sv    
+  
     ../rtl/keyboard/keyboard_controller.sv
     ../rtl/keyboard/PS2Receiver.sv
+
     ../rtl/throw/throw_ctl_dog.sv
     ../rtl/throw/throw_ctl_cat.sv
     ../rtl/throw/draw_projectile_dog.sv
     ../rtl/throw/draw_projectile_cat.sv
-    ../rtl/draw_rectangle.sv
-    ../rtl/turn_local_fsm.sv
-    ../rtl/turn_remote_fsm.sv
-    rtl/top_vga_basys3.sv
-    ../rtl/background/vga_pkg.sv
-    ../rtl/background/draw_bg.sv
-    ../rtl/background/image_rom.sv
+
+    ../rtl/game_control/turn_local_fsm.sv
+    ../rtl/game_control/turn_remote_fsm.sv
+    ../rtl/game_control/vga_pkg.sv
+    ../rtl/game_control/game_fsm.sv
+
     ../rtl/players/draw_player_cat.sv
     ../rtl/players/draw_player_dog.sv
     ../rtl/players/image_rom_cat.sv

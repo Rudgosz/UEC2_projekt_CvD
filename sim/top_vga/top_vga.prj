@@ -9,23 +9,23 @@
 # https://docs.xilinx.com/r/en-US/ug900-vivado-logic-simulation/Project-File-.prj-Syntax
 
 
-sv work ../../rtl/background/vga_pkg.sv \
+sv work ../../rtl/drawing/vga_pkg.sv \
         ../../rtl/vga_timing.sv \
         ../../rtl/throw/throw_ctl_cat.sv \
         ../../rtl/throw/throw_ctl_dog.sv \
         ../../rtl/throw/draw_projectile_cat.sv \
         ../../rtl/throw/draw_projectile_dog.sv \
-        ../../rtl/turn_local_fsm.sv \
-        ../../rtl/turn_remote_fsm.sv \
-        ../../rtl/health_bars.sv \
-        ../../rtl/game_fsm.sv \
-        ../../rtl/background/draw_bg.sv \
-        ../../rtl/background/image_rom.sv \
+        ../../rtl/game_control/turn_local_fsm.sv \
+        ../../rtl/game_control/turn_remote_fsm.sv \
+        ../../rtl/drawing/health_bars.sv \
+        ../../rtl/game_control/game_fsm.sv \
+        ../../rtl/drawing/draw_bg.sv \
+        ../../rtl/drawing/image_rom.sv \
         ../../rtl/vga_if.sv \
         ../../rtl/keyboard/keyboard_controller.sv \
         ../../rtl/keyboard/PS2Receiver.sv \
         ../../rtl/keyboard/debouncer.v \
-        ../../rtl/draw_rectangle.sv \
+        ../../rtl/drawing/draw_rectangle.sv \
         ../../rtl/top_vga.sv \
         ../../rtl/players/image_rom_dog.sv \
         ../../rtl/players/draw_player_dog.sv \

@@ -89,6 +89,8 @@ module top_vga (
     logic [15:0] ps2_keycode;
     logic       ps2_key_valid;
     logic       space;
+    logic       enter;
+    
     logic       enable_draw;
     logic [1:0] state_dog;
     logic [1:0] state_cat;
@@ -171,7 +173,8 @@ module top_vga (
     keyboard_controller u_keyboard (
         .clk(clk65MHz),
         .keycode(ps2_keycode),
-        .space(space)
+        .space(space),
+        .enter(enter)
     );
 
     draw_rectangle u_draw_rectangle (

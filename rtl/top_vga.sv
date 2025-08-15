@@ -300,7 +300,7 @@ module top_vga (
     draw_player_dog u_draw_player_dog (
         .clk(clk65MHz),
         .rst,
-        //.hit_dog(hit_dog),
+        .hit_dog(hit_dog),
         .turn_active(dog_turn),
         .throw_command(throw_command),
         .throw_power(throw_power_out),

@@ -2,7 +2,6 @@ module draw_over (
     input  logic        clk,
     input  logic        rst,
     input  logic [2:0]  game_state,
-    //output logic        over_on,
     output logic [11:0] rgb_over,
     vga_if.vga_in      vga_in,
     vga_if.vga_out      vga_out
@@ -22,7 +21,7 @@ module draw_over (
             vga_in.hcount >= X_START && vga_in.hcount < X_END &&
             vga_in.vcount >= Y_START && vga_in.vcount < Y_END) begin
             over_on  = 1;
-            rgb_over = 12'hFF0;
+            rgb_over = 12'h0FF;
         end
     end
 

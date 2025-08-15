@@ -111,9 +111,9 @@ module top_vga (
      * Signals assignments
      */
 
-    assign vs = vga_start_if.vsync;
-    assign hs = vga_start_if.hsync;
-    assign {r,g,b} = vga_start_if.rgb[11:0];
+    assign vs = vga_projectile_cat_if.vsync;
+    assign hs = vga_projectile_cat_if.hsync;
+    assign {r,g,b} = vga_projectile_cat_if.rgb[11:0];
 
     assign throw_keyboard_trigger = space;
 
@@ -150,7 +150,7 @@ module top_vga (
     game_fsm u_game_fsm (
         .clk(clk65MHz),
         .rst(rst),
-        .enter_pressed_local (btn_enter_local),
+        .enter_pressed_local (enter),
         .enter_pressed_remote(btn_enter_remote),
         .turn_done(turn_done),
         .hp_local(hp_local),
@@ -187,14 +187,14 @@ module top_vga (
     );
 
     draw_start u_draw_start (
-    .clk(clk65MHz),
-    .rst(rst),
-    .enter(enter),
-    .game_state(game_state),
-    .start_on(start_on),
-    .rgb_start(rgb_start),
-    .vga_in(vga_projectile_dog_if.vga_out),
-    .vga_out(vga_start_if.vga_out)
+        .clk(clk65MHz),
+        .rst(rst),
+        .enter(enter),
+        .game_state(game_state),
+        .start_on(start_on),
+        .rgb_start(rgb_start),
+        .vga_in(vga_projectile_dog_if.vga_out),
+        .vga_out(vga_start_if.vga_out)
     );
 
     draw_rectangle u_draw_rectangle (
@@ -315,15 +315,15 @@ module top_vga (
         .hit_dog(hit_dog)
     );
 
-    // throw_ctl_cat u_throw_ctl_cat (
-    //     .clk(clk65MHz),
-    //     .rst(rst),
-    //     .enable(throw_enable_cat),
-    //     .throw_force(throw_force_cat),
-    //     .x_pos(x_pos_cat),
-    //     .y_pos(y_pos_cat),
-    //     .hit_cat(hit_cat)
-    // );
+    throw_ctl_cat u_throw_ctl_cat (
+        .clk(clk65MHz),
+        .rst(rst),
+        .enable(throw_enable_cat),
+        .throw_force(throw_force_cat),
+        .x_pos(x_pos_cat),
+        .y_pos(y_pos_cat),
+        .hit_cat(hit_cat)
+    );
 
     draw_projectile_dog u_draw_projectile_dog (
         .clk(clk65MHz),
@@ -336,14 +336,14 @@ module top_vga (
 
     
 
-    // draw_projectile_cat u_draw_projectile_cat (
-    //     .clk(clk65MHz),
-    //     .rst(rst),
-    //     .x_pos(x_pos_cat),
-    //     .y_pos(y_pos_cat),
-    //     .vga_in(vga_hp_if.vga_in),
-    //     .vga_out(vga_projectile_cat_if.vga_out)
-    // );
+    draw_projectile_cat u_draw_projectile_cat (
+        .clk(clk65MHz),
+        .rst(rst),
+        .x_pos(x_pos_cat),
+        .y_pos(y_pos_cat),
+        .vga_in(vga_start_if.vga_in),
+        .vga_out(vga_projectile_cat_if.vga_out)
+    );
 
     health_bars u_health_bars(
         .clk(clk65MHz),

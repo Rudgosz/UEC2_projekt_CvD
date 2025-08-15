@@ -18,7 +18,6 @@ module keyboard_controller (
         end else if (keycode[7:0] == SPACE) begin
             space <= 1;
         end
-    end
 
         if (keycode[15:8] == BREAK && keycode[7:0] == ENTER) begin
             enter <= 0;

@@ -6,7 +6,8 @@ module game_fsm (
     input  logic turn_done,
     input  logic [9:0] hp_local,
     input  logic [9:0] hp_remote,
-    output logic whose_turn
+    output logic whose_turn,
+	output logic [2:0] state_game_fsm
 );
 
     typedef enum logic [2:0] {
@@ -15,8 +16,10 @@ module game_fsm (
         OPPONENT_TURN  = 3'b010,
         CHECK_WIN      = 3'b011,
 		GAME_OVER      = 3'b100
-    } state_t;
-    state_t state;
+	} state_t;
+	state_t state;
+
+	assign state_game_fsm = state;
 
 	always_ff @(posedge clk) begin
 		if (rst) begin

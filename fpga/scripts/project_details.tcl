@@ -36,11 +36,13 @@ set sv_files {
     ../rtl/vga_if.sv
     ../rtl/top_vga.sv
     rtl/top_vga_basys3.sv
+    ../rtl/vga_pkg.sv
 
     ../rtl/drawing/health_bars.sv
     ../rtl/drawing/draw_rectangle.sv
     ../rtl/drawing/draw_bg.sv
     ../rtl/drawing/image_rom.sv    
+    ../rtl/drawing/draw_start.sv    
   
     ../rtl/keyboard/keyboard_controller.sv
     ../rtl/keyboard/PS2Receiver.sv
@@ -52,7 +54,6 @@ set sv_files {
 
     ../rtl/game_control/turn_local_fsm.sv
     ../rtl/game_control/turn_remote_fsm.sv
-    ../rtl/game_control/vga_pkg.sv
     ../rtl/game_control/game_fsm.sv
 
     ../rtl/players/draw_player_cat.sv

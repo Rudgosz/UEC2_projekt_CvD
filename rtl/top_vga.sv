@@ -66,6 +66,9 @@ module top_vga (
     // VGA signals from health_bars
     vga_if vga_hp_if();
 
+    // VGA signals from draw_start
+    vga_if vga_start_if();
+
     // Keyboard signals
     logic throw_keyboard_trigger;
     logic [7:0] throw_keyboard_power;
@@ -108,14 +111,17 @@ module top_vga (
      * Signals assignments
      */
 
-    assign vs = vga_projectile_dog_if.vsync;
-    assign hs = vga_projectile_dog_if.hsync;
-    assign {r,g,b} = vga_projectile_dog_if.rgb[11:0];
+    assign vs = vga_start_if.vsync;
+    assign hs = vga_start_if.hsync;
+    assign {r,g,b} = vga_start_if.rgb[11:0];
 
     assign throw_keyboard_trigger = space;
 
     logic [11:0] rgb_background;
     logic [19:0] bg_addr;
+
+    logic [11:0] rgb_start;
+    logic [19:0] start_on;
 
     logic rectangle_on;
     logic [11:0] rgb_rectangle;
@@ -134,6 +140,8 @@ module top_vga (
 
     logic hit_cat;
     logic hit_dog;
+
+    logic [2:0] game_state;
     /**
      * Submodules instances
      */
@@ -147,7 +155,8 @@ module top_vga (
         .turn_done(turn_done),
         .hp_local(hp_local),
         .hp_remote(hp_remote),
-        .whose_turn(whose_turn)
+        .whose_turn(whose_turn),
+        .state_game_fsm(game_state)
     );
 
     turn_local_fsm u_turn_local_fsm (
@@ -175,6 +184,17 @@ module top_vga (
         .keycode(ps2_keycode),
         .space(space),
         .enter(enter)
+    );
+
+    draw_start u_draw_start (
+    .clk(clk65MHz),
+    .rst(rst),
+    .enter(enter),
+    .game_state(game_state),
+    .start_on(start_on),
+    .rgb_start(rgb_start),
+    .vga_in(vga_projectile_dog_if.vga_out),
+    .vga_out(vga_start_if.vga_out)
     );
 
     draw_rectangle u_draw_rectangle (

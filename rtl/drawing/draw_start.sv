@@ -2,8 +2,8 @@ module draw_start (
     input  logic        clk,
     input  logic        rst,
     input  logic        enter,
-    input  logic        game_state,
-    output logic        start_on,
+    input  logic [2:0]  game_state,
+    //output logic        start_on,
     output logic [11:0] rgb_start,
     vga_if.vga_in      vga_in,
     vga_if.vga_out      vga_out
@@ -25,14 +25,14 @@ module draw_start (
     end
 
     always_comb begin
-        start_on  = 0;
+        //start_on  = 0;
         rgb_start = vga_in.rgb;
 
         if (game_state == 3'b000 &&
             start_enable &&
             vga_in.hcount >= X_START && vga_in.hcount < X_END &&
             vga_in.vcount >= Y_START && vga_in.vcount < Y_END) begin
-            start_on  = 1;
+            //start_on  = 1;
             rgb_start = 12'hFF0;
         end
     end
@@ -43,6 +43,6 @@ module draw_start (
     assign vga_out.vsync  = vga_in.vsync;
     assign vga_out.hblnk  = vga_in.hblnk;
     assign vga_out.vblnk  = vga_in.vblnk;
-    assign vga_out.rgb    = start_on ? rgb_start : vga_in.rgb;
+    assign vga_out.rgb    = start_enable ? rgb_start : vga_in.rgb;
 
 endmodule

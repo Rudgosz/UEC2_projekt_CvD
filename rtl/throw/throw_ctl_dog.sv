@@ -27,10 +27,10 @@ module throw_ctl_dog (
     localparam WALL_TOP = 241;
     localparam WALL_BOTTOM = 768;
 
-    localparam DOG_X_LEFT = 800;
-    localparam DOG_X_RIGHT = 850;
-    localparam DOG_TOP = 427;
-    localparam DOG_BOTTOM = 525;
+    localparam CAT_X_LEFT = 0;
+    localparam CAT_X_RIGHT = 157;
+    localparam CAT_TOP = 427;
+    localparam CAT_BOTTOM = 525;
     
     
 
@@ -55,8 +55,8 @@ module throw_ctl_dog (
     logic dog_in_range_d;
 
     always_comb begin
-        dog_in_range = (VER_PIXELS - y_pos >= DOG_TOP && VER_PIXELS - y_pos <= DOG_BOTTOM &&
-                        HOR_PIXELS - x_pos <= DOG_X_RIGHT && HOR_PIXELS - x_pos >= DOG_X_LEFT);
+        dog_in_range = (VER_PIXELS - y_pos >= CAT_TOP && VER_PIXELS - y_pos <= CAT_BOTTOM &&
+                        HOR_PIXELS - x_pos <= CAT_X_RIGHT && HOR_PIXELS - x_pos >= CAT_X_LEFT);
     end
 
     always_ff @(posedge clk or posedge rst) begin

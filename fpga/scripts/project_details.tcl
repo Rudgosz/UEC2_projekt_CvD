@@ -39,7 +39,8 @@ set sv_files {
     ../rtl/vga_pkg.sv
 
     ../rtl/drawing/health_bars.sv
-    ../rtl/drawing/draw_rectangle.sv
+    ../rtl/drawing/draw_rectangle_dog.sv
+    ../rtl/drawing/draw_rectangle_cat.sv
     ../rtl/drawing/draw_bg.sv
     ../rtl/drawing/image_rom.sv    
     ../rtl/drawing/draw_start.sv    

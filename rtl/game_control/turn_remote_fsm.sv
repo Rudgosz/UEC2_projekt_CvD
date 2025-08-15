@@ -2,9 +2,11 @@ module turn_remote_fsm (
     input  logic clk,
     input  logic rst,
     input  logic space,
-    input  logic whose_turn,
+    input  logic cat_turn,
+    output logic enable_draw,
     output logic [1:0] index,
-    output logic throw_enable
+    output logic throw_enable,
+    output logic turn_done
 );
 
     typedef enum logic [1:0] {
@@ -21,24 +23,30 @@ module turn_remote_fsm (
     always_ff @(posedge clk) begin
         if (rst) begin
             state        <= IDLE;
+            enable_draw  <= 0;
             index        <= 0;
             throw_enable <= 0;
             counter      <= 0;
+            turn_done    <= 0;
         end
         else begin
 
-            if (whose_turn) begin
+            if (!cat_turn) begin
                 state        <= IDLE;
+                enable_draw  <= 0;
                 index        <= 0;
                 throw_enable <= 0;
                 counter      <= 0;
+                turn_done    <= 0;
             end else begin
                 
                 case (state)
                     IDLE: begin
                         index        <= 0;
+                        enable_draw  <= 0;
                         throw_enable <= 0;
                         counter      <= 0;
+                        turn_done    <= 0;
                         if (space)
                             state <= SP1;
                         else
@@ -47,8 +55,10 @@ module turn_remote_fsm (
 
                     SP1: begin
                         index        <= 1;
+                        enable_draw  <= 1;
                         throw_enable <= 0;
                         counter      <= 0;
+                        turn_done    <= 0;
                         if (!space)
                             state <= SP0;
                         else
@@ -57,7 +67,9 @@ module turn_remote_fsm (
 
                     SP0: begin
                         index        <= 2;
+                        enable_draw  <= 0;
                         throw_enable <= 1;
+                        turn_done    <= 0;
                         if (counter < ONE_SECOND-1) begin
                             counter <= counter + 1;
                             state   <= SP0;
@@ -69,9 +81,11 @@ module turn_remote_fsm (
 
                     SP0_2: begin
                         index        <= 2;
+                        enable_draw  <= 0;
                         throw_enable <= 0;
                         counter      <= 0;
                         state        <= IDLE;
+                        turn_done    <= 1;
                     end
 
                     default: state <= IDLE;

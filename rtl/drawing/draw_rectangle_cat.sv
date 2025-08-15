@@ -1,4 +1,4 @@
-module draw_rectangle (
+module draw_rectangle_cat (
     input  logic        clk,
     input  logic        rst,
     input  logic        space,
@@ -9,7 +9,7 @@ module draw_rectangle (
     vga_if.vga_out      vga_out
 );
 
-    localparam X_START     = 876;
+    localparam X_START     = 20;
     localparam Y_START     = 400;
     localparam Y_END       = 421; 
     localparam MAX_WIDTH   = 128;

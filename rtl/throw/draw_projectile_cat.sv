@@ -59,7 +59,7 @@ module draw_projectile_cat (
             vga_out.vsync  <= vsync_delay;
             vga_out.vblnk  <= vblnk_delay;
 
-            center_x_cat <= HOR_PIXELS - x_pos + RADIUS;
+            center_x_cat <= x_pos + RADIUS;
             center_y_cat <= VER_PIXELS - y_pos + RADIUS;
 
             dx_cat <= hcount_delay - center_x_cat;

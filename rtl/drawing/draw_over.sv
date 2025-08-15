@@ -2,12 +2,13 @@ module draw_over (
     input  logic        clk,
     input  logic        rst,
     input  logic [2:0]  game_state,
-    output logic        over_on,
+    //output logic        over_on,
     output logic [11:0] rgb_over,
     vga_if.vga_in      vga_in,
     vga_if.vga_out      vga_out
 );
 
+    logic over_on;
     localparam integer X_START = 400;
     localparam integer X_END   = 600;
     localparam integer Y_START = 200;

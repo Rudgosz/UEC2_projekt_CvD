@@ -14,7 +14,7 @@ module throw_ctl_cat (
 
     localparam int INITIAL_VELOCITY = 27;
     localparam int GRAVITY = 1;
-    localparam int MOUSE_XPOS_CAT = 884;
+    localparam int MOUSE_XPOS_CAT = 140;
     localparam int MOUSE_YPOS_CAT = 350;
     localparam int IMAGE_Y_END = 700;
 
@@ -27,10 +27,10 @@ module throw_ctl_cat (
     localparam WALL_TOP = 241;
     localparam WALL_BOTTOM = 768;
 
-    localparam CAT_X_LEFT = 0;
-    localparam CAT_X_RIGHT = 157;
-    localparam CAT_TOP = 427;
-    localparam CAT_BOTTOM = 525;
+    localparam DOG_X_LEFT = 867;
+    localparam DOG_X_RIGHT = 1024;
+    localparam DOG_TOP = 427;
+    localparam DOG_BOTTOM = 525;
     
     
 
@@ -55,8 +55,8 @@ module throw_ctl_cat (
     logic cat_in_range_d;
 
     always_comb begin
-        cat_in_range = (VER_PIXELS - y_pos >= CAT_TOP && VER_PIXELS - y_pos <= CAT_BOTTOM &&
-                        HOR_PIXELS - x_pos <= CAT_X_RIGHT && HOR_PIXELS - x_pos >= CAT_X_LEFT);
+        cat_in_range = (VER_PIXELS - y_pos >= DOG_TOP && VER_PIXELS - y_pos <= DOG_BOTTOM &&
+                        x_pos <= DOG_X_RIGHT && x_pos >= DOG_X_LEFT);
     end
 
     always_ff @(posedge clk or posedge rst) begin
@@ -152,13 +152,13 @@ module throw_ctl_cat (
                         state <= ST_END;
                     end
 
-                    if (VER_PIXELS - y_pos > WALL_TOP && HOR_PIXELS - x_pos <= WALL_X_RIGHT + 15 && HOR_PIXELS - x_pos >= WALL_X_LEFT - 15) begin
+                    if (VER_PIXELS - y_pos > WALL_TOP && x_pos <= WALL_X_RIGHT + 15 && x_pos >= WALL_X_LEFT - 15) begin
                         x_pos <= x_pos;
                     end else begin
                         x_pos <= xpos_0 + (scaled_force_cat + wind_offset_cat) * elapsed_cat_fall;
                     end
 
-                    if(VER_PIXELS - y_pos <= WALL_TOP && VER_PIXELS - y_pos >= WALL_TOP - 15 && HOR_PIXELS - x_pos <= WALL_X_RIGHT + 15 && HOR_PIXELS - x_pos >= WALL_X_LEFT - 15) begin
+                    if(VER_PIXELS - y_pos <= WALL_TOP && VER_PIXELS - y_pos >= WALL_TOP - 15 && x_pos <= WALL_X_RIGHT + 15 && x_pos >= WALL_X_LEFT - 15) begin
                         state <= ST_END;
                     end
 

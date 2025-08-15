@@ -55,7 +55,8 @@ module top_vga (
     vga_if vga_cat_if();
 
     // VGA signals from draw_rectangle
-    vga_if vga_rect_if();
+    vga_if vga_rect_dog_if();
+    vga_if vga_rect_cat_if();
 
     // VGA signals form draw_projectile
     vga_if vga_projectile_dog_if();
@@ -96,8 +97,10 @@ module top_vga (
     logic       ps2_key_valid;
     logic       space;
     logic       enter;
+    logic       start_game;
     
-    logic       enable_draw;
+    logic       enable_draw_cat;
+    logic       enable_draw_dog;
     logic [1:0] state_dog;
     logic [1:0] state_cat;
 
@@ -124,7 +127,6 @@ module top_vga (
     logic [19:0] bg_addr;
 
     logic [11:0] rgb_start;
-    logic [19:0] start_on;
 
     logic rectangle_on;
     logic [11:0] rgb_rectangle;
@@ -141,8 +143,17 @@ module top_vga (
     logic throw_enable_dog;
     logic throw_enable_cat;
 
+    logic turn_done_remote;
+    logic turn_done_local;
+
     logic hit_cat;
     logic hit_dog;
+
+    logic rectangle_on_cat;
+    logic rectangle_on_dog;
+
+    logic [11:0] rgb_rectangle_cat;
+    logic [11:0] rgb_rectangle_dog;
 
     logic [2:0] game_state;
     /**
@@ -155,31 +166,37 @@ module top_vga (
         .rst(rst),
         .enter_pressed_local (enter),
         .enter_pressed_remote(btn_enter_remote),
-        .turn_done(turn_done),
+        .turn_done_cat(turn_done_remote),
+        .turn_done_dog(turn_done_local),
         .hp_local(hp_local),
         .hp_remote(hp_remote),
-        .whose_turn(whose_turn),
-        .state_game_fsm(game_state)
+        .dog_turn(dog_turn),
+        .cat_turn(cat_turn),
+        .state_game_fsm(game_state),
+        .start_game(start_game)
     );
 
     turn_local_fsm u_turn_local_fsm (
         .clk(clk65MHz),
         .rst(rst),
-        .whose_turn(whose_turn),
+        .dog_turn(dog_turn),
         .space(space),
-        .enable_draw(enable_draw),
+        .enable_draw(enable_draw_dog),
         .index(state_dog),
         .space_pin_tx(SPACE_TX),
-        .throw_enable(throw_enable_dog)
+        .throw_enable(throw_enable_dog),
+        .turn_done(turn_done_local)
     );
 
     turn_remote_fsm u_turn_remote_fsm (
         .clk(clk65MHz),
         .rst(rst),
-        .whose_turn(whose_turn),
+        .cat_turn(cat_turn),
+        .enable_draw(enable_draw_cat),
         .space(btn_space_remote),
         .index(state_cat),
-        .throw_enable(throw_enable_cat)
+        .throw_enable(throw_enable_cat),
+        .turn_done(turn_done_remote)
     );
 
     keyboard_controller u_keyboard (
@@ -192,9 +209,8 @@ module top_vga (
     draw_start u_draw_start (
         .clk(clk65MHz),
         .rst(rst),
-        .enter(enter),
+        .enter(start_game),
         .game_state(game_state),
-        .start_on(start_on),
         .rgb_start(rgb_start),
         .vga_in(vga_over_if.vga_in),
         .vga_out(vga_start_if.vga_out)
@@ -204,21 +220,31 @@ module top_vga (
         .clk(clk65MHz),
         .rst(rst),
         .game_state(game_state),
-        .over_on(over_on),
         .rgb_over(rgb_over),
         .vga_in(vga_projectile_cat_if.vga_in),
         .vga_out(vga_over_if.vga_out)
     );
 
-    draw_rectangle u_draw_rectangle (
+    draw_rectangle_cat u_draw_rectangle_cat (
         .clk(clk65MHz),
         .rst(rst),
-        .space(enable_draw),
-        .rectangle_on(rectangle_on),
-        .rgb_rectangle(rgb_rectangle),
+        .space(enable_draw_cat),
+        .rectangle_on(rectangle_on_cat),
+        .rgb_rectangle(rgb_rectangle_cat),
+        .throw_force(throw_force_cat),
+        .vga_in(vga_rect_dog_if.vga_in),
+        .vga_out(vga_rect_cat_if.vga_out)
+    );
+
+    draw_rectangle_dog u_draw_rectangle_dog (
+        .clk(clk65MHz),
+        .rst(rst),
+        .space(enable_draw_dog),
+        .rectangle_on(rectangle_on_dog),
+        .rgb_rectangle(rgb_rectangle_dog),
         .throw_force(throw_force_dog),
         .vga_in(vga_bg_if.vga_in),
-        .vga_out(vga_rect_if.vga_out)
+        .vga_out(vga_rect_dog_if.vga_out)
     );
 
     PS2Receiver u_ps2_receiver (
@@ -274,7 +300,7 @@ module top_vga (
     draw_player_dog u_draw_player_dog (
         .clk(clk65MHz),
         .rst,
-
+        //.hit_dog(hit_dog),
         .turn_active(dog_turn),
         .throw_command(throw_command),
         .throw_power(throw_power_out),
@@ -283,7 +309,7 @@ module top_vga (
 
         .rgb_dog(rgb_dog),
         .dog_addr(dog_addr),
-        .vga_in     (vga_rect_if.vga_in),
+        .vga_in     (vga_rect_cat_if.vga_in),
         .vga_out    (vga_dog_if.vga_out)
     );
 
@@ -325,7 +351,7 @@ module top_vga (
         .throw_force(throw_force_dog),
         .x_pos(x_pos_dog),
         .y_pos(y_pos_dog),
-        .hit_dog(hit_dog)
+        .hit_dog(hit_cat)
     );
 
     throw_ctl_cat u_throw_ctl_cat (
@@ -335,7 +361,7 @@ module top_vga (
         .throw_force(throw_force_cat),
         .x_pos(x_pos_cat),
         .y_pos(y_pos_cat),
-        .hit_cat(hit_cat)
+        .hit_cat(hit_dog)
     );
 
     draw_projectile_dog u_draw_projectile_dog (
@@ -362,9 +388,9 @@ module top_vga (
         .clk(clk65MHz),
         .rst(rst),
         .hit_cat(hit_cat),
-        .hit_dog(),
-        .hp_cat(),
-        .hp_dog(),
+        .hit_dog(hit_dog),
+        .hp_cat(hp_remote),
+        .hp_dog(hp_local),
         .bar_on(bar_on),
         .rgb_bar(rgb_bar),
         .vga_in(vga_cat_if.vga_in),

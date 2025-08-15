@@ -84,8 +84,6 @@ module draw_bg (
             if (!hblnk_d && !vblnk_d) begin
                 if (rgb_background != 12'h000) begin
                     rgb_nxt = rgb_background;
-                end else if (rectangle_on) begin
-                    rgb_nxt = rgb_rectangle;
                 end else if (bar_on) begin
                     rgb_nxt = rgb_bar;
                 end else begin

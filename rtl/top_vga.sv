@@ -68,6 +68,9 @@ module top_vga (
 
     // VGA signals from draw_start
     vga_if vga_start_if();
+     
+    // VGA signals from draw_over
+    vga_if vga_over_if();
 
     // Keyboard signals
     logic throw_keyboard_trigger;
@@ -193,8 +196,18 @@ module top_vga (
         .game_state(game_state),
         .start_on(start_on),
         .rgb_start(rgb_start),
-        .vga_in(vga_projectile_cat_if.vga_out),
+        .vga_in(vga_over_if.vga_out),
         .vga_out(vga_start_if.vga_out)
+    );
+
+    draw_over u_draw_over (
+        .clk(clk65MHz),
+        .rst(rst),
+        .game_state(game_state),
+        .over_on(over_on),
+        .rgb_over(rgb_over),
+        .vga_in(vga_projectile_cat_if.vga_out),
+        .vga_out(vga_over_if.vga_out)
     );
 
     draw_rectangle u_draw_rectangle (

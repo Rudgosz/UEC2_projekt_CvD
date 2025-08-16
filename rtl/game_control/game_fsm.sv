@@ -32,7 +32,6 @@ module game_fsm (
             dog_turn    <= 0;
             start_game  <= 0;
         end else begin
-            // globalny priorytet: zawsze najpierw sprawdzamy HP
             if (hp_local == 0 || hp_remote == 0) begin
                 state    <= GAME_OVER;
                 dog_turn <= 0;

@@ -126,7 +126,11 @@ module top_vga (
     logic [11:0] rgb_background;
     logic [19:0] bg_addr;
 
+    logic [19:0] start_addr;
     logic [11:0] rgb_start;
+
+    logic [19:0] over_addr;
+    logic [11:0] rgb_over;
 
     logic rectangle_on;
     logic [11:0] rgb_rectangle;
@@ -209,9 +213,9 @@ module top_vga (
     draw_start u_draw_start (
         .clk(clk65MHz),
         .rst(rst),
-        .enter(start_game),
         .game_state(game_state),
         .rgb_start(rgb_start),
+        .start_addr(start_addr),
         .vga_in(vga_over_if.vga_in),
         .vga_out(vga_start_if.vga_out)
     );
@@ -221,6 +225,7 @@ module top_vga (
         .rst(rst),
         .game_state(game_state),
         .rgb_over(rgb_over),
+        .over_addr(over_addr),
         .vga_in(vga_projectile_cat_if.vga_in),
         .vga_out(vga_over_if.vga_out)
     );
@@ -295,6 +300,18 @@ module top_vga (
         .clk(clk65MHz),
         .address(bg_addr),
         .rgb(rgb_background)
+    );
+
+    start_rom u_start_rom (
+        .clk(clk65MHz),
+        .address(start_addr),
+        .rgb(rgb_start)
+    );
+    
+    over_rom u_over_rom (
+        .clk(clk65MHz),
+        .address(over_addr),
+        .rgb(rgb_over)
     );
 
     draw_player_dog u_draw_player_dog (

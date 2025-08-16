@@ -22,6 +22,8 @@ sv work ../../rtl/vga_pkg.sv \
         ../../rtl/drawing/draw_bg.sv \
         ../../rtl/drawing/draw_over.sv \
         ../../rtl/drawing/image_rom.sv \
+        ../../rtl/drawing/over_rom.sv \
+        ../../rtl/drawing/start_rom.sv \
         ../../rtl/drawing/draw_start.sv \
         ../../rtl/vga_if.sv \
         ../../rtl/keyboard/keyboard_controller.sv \

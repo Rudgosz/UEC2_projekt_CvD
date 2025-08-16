@@ -13,7 +13,7 @@
  * red, green and blue color values (4-bit each)
  */
 
-module image_rom (
+module start_rom (
         input  logic clk ,
         input  logic [19:0] address,  // address = {addry[5:0], addrx[5:0]}
         output logic [11:0] rgb

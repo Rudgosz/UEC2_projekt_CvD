@@ -26,9 +26,9 @@ module top_vga_basys3 (
         output wire [3:0] vgaBlue,
         inout  wire PS2Clk,
         inout  wire PS2Data,
-        output wire SPACE_RX,
+        input wire SPACE_RX,
+        input wire ENTER_RX,
         output wire SPACE_TX,
-        output wire ENTER_RX,
         output wire ENTER_TX
     );
 

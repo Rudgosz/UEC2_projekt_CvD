@@ -130,12 +130,14 @@ set_property PACKAGE_PIN U17 [get_ports btnD]
 ##Sch name = JA1
 set_property PACKAGE_PIN J1 [get_ports {SPACE_RX}]
 	set_property IOSTANDARD LVCMOS33 [get_ports {SPACE_RX}]
+	set_property PULLUP TRUE         [get_ports {SPACE_RX}]
 ##Sch name = JA2
 set_property PACKAGE_PIN L2 [get_ports {SPACE_TX}]
 	set_property IOSTANDARD LVCMOS33 [get_ports {SPACE_TX}]
 ##Sch name = JA3
 set_property PACKAGE_PIN J2 [get_ports {ENTER_RX}]
 	set_property IOSTANDARD LVCMOS33 [get_ports {ENTER_RX}]
+	set_property PULLUP TRUE         [get_ports {ENTER_RX}]
 ##Sch name = JA4
 set_property PACKAGE_PIN G2 [get_ports {ENTER_TX}]
 	set_property IOSTANDARD LVCMOS33 [get_ports {ENTER_TX}]

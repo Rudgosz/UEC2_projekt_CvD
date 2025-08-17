@@ -116,6 +116,9 @@ module top_vga (
 
     logic [6:0] wind_force;
 
+    logic space_remote;
+    logic enter_remote;
+
 
 
     /**
@@ -127,6 +130,31 @@ module top_vga (
     assign {r,g,b} = vga_start_if.rgb[11:0];
 
     assign throw_keyboard_trigger = space;
+
+    assign SPACE_TX = space;
+    assign ENTER_TX = enter;
+
+
+    // logic SPACE_RX_sync, SPACE_RX_meta;
+    // logic ENTER_RX_sync, ENTER_RX_meta;
+
+    // always_ff @(posedge clk65MHz or posedge rst) begin
+    //     if (rst) begin
+    //         SPACE_RX_meta <= 0;
+    //         SPACE_RX_sync <= 0;
+    //         ENTER_RX_meta <= 0;
+    //         ENTER_RX_sync <= 0;
+    //     end else begin
+    //         SPACE_RX_meta <= SPACE_RX;
+    //         SPACE_RX_sync <= SPACE_RX_meta;
+    //         ENTER_RX_meta <= ENTER_RX;
+    //         ENTER_RX_sync <= ENTER_RX_meta;
+    //     end
+    // end
+
+    assign space_remote = SPACE_RX || btn_space_remote;
+    assign enter_remote = ENTER_RX || btn_enter_remote;
+
 
     logic [11:0] rgb_background;
     logic [19:0] bg_addr;
@@ -167,6 +195,7 @@ module top_vga (
     logic [2:0] game_state;
 
     logic next_turn;
+    logic enter_start_remote;
 
 
     /**
@@ -178,7 +207,7 @@ module top_vga (
         .clk(clk65MHz),
         .rst(rst),
         .enter_pressed_local (enter),
-        .enter_pressed_remote(btn_enter_remote),
+        .enter_pressed_remote(enter_remote),
         .turn_done_cat(turn_done_remote),
         .turn_done_dog(turn_done_local),
         .hp_local(hp_local),
@@ -187,7 +216,8 @@ module top_vga (
         .cat_turn(cat_turn),
         .state_game_fsm(game_state),
         .start_game(start_game),
-        .next_turn(next_turn)
+        .next_turn(next_turn),
+        .enter_start_remote(enter_start_remote)
     );
 
     turn_local_fsm u_turn_local_fsm (
@@ -197,7 +227,7 @@ module top_vga (
         .space(space),
         .enable_draw(enable_draw_dog),
         .index(state_dog),
-        .space_pin_tx(SPACE_TX),
+        .space_pin_tx(),
         .throw_enable(throw_enable_dog)
         //.turn_done(turn_done_local)
     );
@@ -207,7 +237,7 @@ module top_vga (
         .rst(rst),
         .cat_turn(cat_turn),
         .enable_draw(enable_draw_cat),
-        .space(btn_space_remote),
+        .space(space_remote),
         .index(state_cat),
         .throw_enable(throw_enable_cat)
         //.turn_done(turn_done_remote)
@@ -439,6 +469,7 @@ module top_vga (
     wind_ctl u_wind_ctl (
         .clk(clk65MHz),
         .rst(rst),
+        .enter_start_remote(enter_start_remote),
         .next_turn(next_turn),
         .wind(wind_force)
     );

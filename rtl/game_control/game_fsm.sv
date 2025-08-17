@@ -11,7 +11,8 @@ module game_fsm (
     output logic cat_turn,
     output logic [2:0] state_game_fsm,
     output logic start_game,
-    output logic next_turn
+    output logic next_turn,
+    output logic enter_start_remote
 );
 
     typedef enum logic [2:0] {
@@ -28,6 +29,7 @@ module game_fsm (
 
     always_ff @(posedge clk) begin
         if (rst) begin
+            enter_start_remote <= 0;
             state       <= START_SCREEN;
             cat_turn    <= 0;
             dog_turn    <= 0;
@@ -49,6 +51,7 @@ module game_fsm (
                             start_game <= 1;
                             state      <= PLAYER_TURN;
                         end else if (enter_pressed_remote) begin
+                            enter_start_remote <= 1;
                             dog_turn   <= 0;
                             cat_turn   <= 1;
                             start_game <= 1;
@@ -57,6 +60,7 @@ module game_fsm (
                     end
 
                     PLAYER_TURN: begin
+                        enter_start_remote <= 0;
                         next_turn   <= 1;
                         if (turn_done_dog) begin
                             state <= CHECK_WIN;
@@ -64,6 +68,7 @@ module game_fsm (
                     end
 
                     OPPONENT_TURN: begin
+                        enter_start_remote <= 0;
                         next_turn   <= 1;
                         if (turn_done_cat) begin
                             state <= CHECK_WIN;
@@ -71,6 +76,7 @@ module game_fsm (
                     end
 
                     CHECK_WIN: begin
+                        enter_start_remote <= 0;
                         next_turn   <= 0;
                         if (cat_turn) begin
                             dog_turn <= 1;
@@ -84,6 +90,7 @@ module game_fsm (
                     end
 
                     GAME_OVER: begin
+                        enter_start_remote <= 0;
                         next_turn   <= 0;
                         dog_turn <= 0;
                         cat_turn <= 0;

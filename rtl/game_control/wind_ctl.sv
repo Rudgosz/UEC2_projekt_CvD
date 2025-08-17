@@ -1,15 +1,16 @@
 module wind_ctl (
     input  logic clk,
     input  logic rst,
+    input  logic enter_start_remote,
     input  logic next_turn,
     output logic [6:0] wind
 );
-
     localparam logic [15:0] SEED = 16'hBEEF;
 
     logic [15:0] state;
     logic feedback;
     logic next_turn_prev;
+    logic enter_flag_latched;
 
     always_ff @(posedge clk or posedge rst) begin
         if (rst) begin
@@ -25,6 +26,21 @@ module wind_ctl (
         end
     end
 
-    assign wind = state % 101;
-
+    always_ff @(posedge clk or posedge rst) begin
+        if (rst) begin
+            wind <= 0;
+            enter_flag_latched <= 0;
+        end
+        else begin
+            if (enter_start_remote) begin
+                enter_flag_latched <= 1;
+            end
+            if (enter_flag_latched) begin
+                wind <= 100 - (state % 101);
+            end
+            else begin
+                wind <= state % 101;
+            end
+        end
+    end
 endmodule

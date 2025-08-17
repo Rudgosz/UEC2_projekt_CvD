@@ -63,7 +63,7 @@ always_comb begin
     if (vga_in.hcount >= FRAME_X_START && vga_in.hcount < FRAME_X_END &&
     vga_in.vcount >= FRAME_Y_START && vga_in.vcount < FRAME_Y_END) begin
     bar_on  = 1;
-    rgb_bar = 12'hFF0; // żółty
+    rgb_bar = 12'hFC0;
     end
 
     if (vga_in.vcount >= Y_START && vga_in.vcount < Y_END &&

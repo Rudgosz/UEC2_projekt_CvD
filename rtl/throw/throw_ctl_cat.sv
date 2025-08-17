@@ -5,9 +5,11 @@ module throw_ctl_cat (
     input  logic enable,
     input  logic rst,
     input  logic [9:0] throw_force,
+    input  logic [6:0] wind_force,
     output logic signed [11:0] x_pos,
     output logic signed [11:0] y_pos,
-    output logic hit_cat
+    output logic hit_cat,
+    output logic throw_done
 );
 
     import vga_pkg::*;
@@ -16,35 +18,30 @@ module throw_ctl_cat (
     localparam int GRAVITY = 1;
     localparam int MOUSE_XPOS_CAT = 140;
     localparam int MOUSE_YPOS_CAT = 350;
-    localparam int IMAGE_Y_END = 700;
 
     localparam int INIT_FORCE = 18;
-    localparam int WIND = 50;
-
 
     localparam WALL_X_LEFT = 490;
     localparam WALL_X_RIGHT = 534;
     localparam WALL_TOP = 241;
-    localparam WALL_BOTTOM = 768;
 
     localparam DOG_X_LEFT = 867;
     localparam DOG_X_RIGHT = 1024;
     localparam DOG_TOP = 427;
     localparam DOG_BOTTOM = 525;
     
-    
-
     int counter_cat;
     int ms_counter_cat;
 
     logic signed [11:0] ypos_0, xpos_0, ypos_0_fall;
     int time_0_cat;
+     int time_0_fall_cat;
     int signed v_0_cat;
     int signed v_temp_cat;
     int elapsed_cat;
 
     int scaled_force_cat;
-    int wind_offset_cat;
+    int wind_effect;
     int elapsed_cat_fall;
 
     typedef enum logic [1:0] {ST_IDLE, ST_THROW, ST_FALL, ST_END} state_t;
@@ -53,6 +50,16 @@ module throw_ctl_cat (
     logic hit_cat_reg;
     logic cat_in_range;
     logic cat_in_range_d;
+
+    always_comb begin
+        if (wind_force > 50) begin
+            wind_effect = -5 - ((wind_force - 50) * 5) / 50;
+        end else if (wind_force < 50) begin
+            wind_effect = 5 + ((50 - wind_force) * 5) / 50;
+        end else begin
+            wind_effect = 0;
+        end
+    end
 
     always_comb begin
         cat_in_range = (VER_PIXELS - y_pos >= DOG_TOP && VER_PIXELS - y_pos <= DOG_BOTTOM &&
@@ -76,15 +83,10 @@ module throw_ctl_cat (
 
     assign hit_cat = hit_cat_reg;
 
-
     always_comb begin
         scaled_force_cat = (throw_force * INIT_FORCE) / 100;
-        if (WIND < 50)
-            wind_offset_cat = -((50 - WIND) * throw_force) / 50;
-        else if (WIND > 50)
-            wind_offset_cat = ((WIND - 50) * throw_force) / 50;
-        else
-            wind_offset_cat = 0;
+        elapsed_cat = ms_counter_cat - time_0_cat;
+        elapsed_cat_fall = ms_counter_cat - time_0_fall_cat;
     end
 
     always_ff @(posedge clk) begin
@@ -103,6 +105,7 @@ module throw_ctl_cat (
 
     always_ff @(posedge clk) begin
         if (rst) begin
+            throw_done <= 0;
             state <= ST_IDLE;
             x_pos <= MOUSE_XPOS_CAT;
             y_pos <= MOUSE_YPOS_CAT;
@@ -115,6 +118,7 @@ module throw_ctl_cat (
         end else begin
             case (state)
                 ST_IDLE: begin
+                    throw_done <= 0;
                     x_pos <= MOUSE_XPOS_CAT;
                     y_pos <= MOUSE_YPOS_CAT;
                     if (enable) begin
@@ -128,45 +132,42 @@ module throw_ctl_cat (
                 end
 
                 ST_THROW: begin
-                    elapsed_cat = ms_counter_cat - time_0_cat;
+                    throw_done <= 0;
                     v_temp_cat <= v_0_cat - GRAVITY * elapsed_cat;
                     y_pos <= ypos_0 + v_0_cat * elapsed_cat - (GRAVITY * elapsed_cat * elapsed_cat) / 2;
-                    x_pos <= xpos_0 + (scaled_force_cat + wind_offset_cat) * elapsed_cat;
+                    x_pos <= xpos_0 + (scaled_force_cat + wind_effect) * elapsed_cat;
                     
                     if (v_temp_cat <= 0) begin
                         state <= ST_FALL;
-                        time_0_cat <= ms_counter_cat;
+                        time_0_fall_cat <= ms_counter_cat;
                         ypos_0_fall <= y_pos;
                         xpos_0 <= x_pos;
                     end
                 end
 
                 ST_FALL: begin
-                    elapsed_cat_fall = ms_counter_cat - time_0_cat;
+                    throw_done <= 0;
                     v_temp_cat <= -GRAVITY * elapsed_cat_fall;
                     y_pos <= ypos_0_fall - (GRAVITY * elapsed_cat_fall * elapsed_cat_fall) / 2;
+                    x_pos <= xpos_0 + (scaled_force_cat + wind_effect) * elapsed_cat_fall;
                     
-
-                    if (y_pos <= VER_PIXELS - 525) begin
+                    if (y_pos <= 190) begin
                         y_pos <= MOUSE_YPOS_CAT;
                         state <= ST_END;
                     end
 
                     if (VER_PIXELS - y_pos > WALL_TOP && x_pos <= WALL_X_RIGHT + 15 && x_pos >= WALL_X_LEFT - 15) begin
                         x_pos <= x_pos;
-                    end else begin
-                        x_pos <= xpos_0 + (scaled_force_cat + wind_offset_cat) * elapsed_cat_fall;
                     end
 
-                    if(VER_PIXELS - y_pos <= WALL_TOP && VER_PIXELS - y_pos >= WALL_TOP - 15 && x_pos <= WALL_X_RIGHT + 15 && x_pos >= WALL_X_LEFT - 15) begin
+                    if(VER_PIXELS - y_pos <= WALL_TOP && VER_PIXELS - y_pos >= WALL_TOP - 15 && 
+                       x_pos <= WALL_X_RIGHT + 15 && x_pos >= WALL_X_LEFT - 15) begin
                         state <= ST_END;
                     end
-
-                                        
-
                 end
 
                 ST_END: begin
+                    throw_done <= 1;
                     x_pos <= MOUSE_XPOS_CAT;
                     y_pos <= MOUSE_YPOS_CAT;
 
@@ -179,6 +180,5 @@ module throw_ctl_cat (
             endcase
         end
     end
-
 
 endmodule

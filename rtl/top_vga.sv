@@ -73,6 +73,9 @@ module top_vga (
     // VGA signals from draw_over
     vga_if vga_over_if();
 
+    //VGA signals from draw_wind
+    vga_if vga_wind_if();
+
     // Keyboard signals
     logic throw_keyboard_trigger;
     logic [7:0] throw_keyboard_power;
@@ -110,6 +113,8 @@ module top_vga (
 
     logic [11:0] x_pos_cat;
     logic [11:0] y_pos_cat;
+
+    logic [6:0] wind_force;
 
 
 
@@ -160,6 +165,10 @@ module top_vga (
     logic [11:0] rgb_rectangle_dog;
 
     logic [2:0] game_state;
+
+    logic next_turn;
+
+
     /**
      * Submodules instances
      */
@@ -177,7 +186,8 @@ module top_vga (
         .dog_turn(dog_turn),
         .cat_turn(cat_turn),
         .state_game_fsm(game_state),
-        .start_game(start_game)
+        .start_game(start_game),
+        .next_turn(next_turn)
     );
 
     turn_local_fsm u_turn_local_fsm (
@@ -188,8 +198,8 @@ module top_vga (
         .enable_draw(enable_draw_dog),
         .index(state_dog),
         .space_pin_tx(SPACE_TX),
-        .throw_enable(throw_enable_dog),
-        .turn_done(turn_done_local)
+        .throw_enable(throw_enable_dog)
+        //.turn_done(turn_done_local)
     );
 
     turn_remote_fsm u_turn_remote_fsm (
@@ -199,8 +209,8 @@ module top_vga (
         .enable_draw(enable_draw_cat),
         .space(btn_space_remote),
         .index(state_cat),
-        .throw_enable(throw_enable_cat),
-        .turn_done(turn_done_remote)
+        .throw_enable(throw_enable_cat)
+        //.turn_done(turn_done_remote)
     );
 
     keyboard_controller u_keyboard (
@@ -226,7 +236,7 @@ module top_vga (
         .game_state(game_state),
         .rgb_over(rgb_over),
         .over_addr(over_addr),
-        .vga_in(vga_projectile_cat_if.vga_in),
+        .vga_in(vga_wind_if.vga_in),
         .vga_out(vga_over_if.vga_out)
     );
 
@@ -368,7 +378,9 @@ module top_vga (
         .throw_force(throw_force_dog),
         .x_pos(x_pos_dog),
         .y_pos(y_pos_dog),
-        .hit_dog(hit_cat)
+        .hit_dog(hit_cat),
+        .wind_force(wind_force),
+        .throw_done(turn_done_local)
     );
 
     throw_ctl_cat u_throw_ctl_cat (
@@ -378,7 +390,9 @@ module top_vga (
         .throw_force(throw_force_cat),
         .x_pos(x_pos_cat),
         .y_pos(y_pos_cat),
-        .hit_cat(hit_dog)
+        .hit_cat(hit_dog),
+        .wind_force(wind_force),
+        .throw_done(turn_done_remote)
     );
 
     draw_projectile_dog u_draw_projectile_dog (
@@ -412,6 +426,21 @@ module top_vga (
         .rgb_bar(rgb_bar),
         .vga_in(vga_cat_if.vga_in),
         .vga_out(vga_hp_if.vga_out)
+    );
+
+    draw_wind u_draw_wind (
+        .clk(clk65MHz),
+        .rst(rst),
+        .wind_force(wind_force),
+        .vga_in(vga_projectile_cat_if.vga_in),
+        .vga_out(vga_wind_if.vga_out)
+    );
+
+    wind_ctl u_wind_ctl (
+        .clk(clk65MHz),
+        .rst(rst),
+        .next_turn(next_turn),
+        .wind(wind_force)
     );
     
 endmodule

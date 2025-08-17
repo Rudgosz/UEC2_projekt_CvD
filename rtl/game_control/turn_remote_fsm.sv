@@ -5,8 +5,8 @@ module turn_remote_fsm (
     input  logic cat_turn,
     output logic enable_draw,
     output logic [1:0] index,
-    output logic throw_enable,
-    output logic turn_done
+    output logic throw_enable
+   // output logic turn_done
 );
 
     typedef enum logic [1:0] {
@@ -27,7 +27,7 @@ module turn_remote_fsm (
             index        <= 0;
             throw_enable <= 0;
             counter      <= 0;
-            turn_done    <= 0;
+            //turn_done    <= 0;
         end
         else begin
 
@@ -37,7 +37,7 @@ module turn_remote_fsm (
                 index        <= 0;
                 throw_enable <= 0;
                 counter      <= 0;
-                turn_done    <= 0;
+                //turn_done    <= 0;
             end else begin
                 
                 case (state)
@@ -46,7 +46,7 @@ module turn_remote_fsm (
                         enable_draw  <= 0;
                         throw_enable <= 0;
                         counter      <= 0;
-                        turn_done    <= 0;
+                        //turn_done    <= 0;
                         if (space)
                             state <= SP1;
                         else
@@ -58,7 +58,7 @@ module turn_remote_fsm (
                         enable_draw  <= 1;
                         throw_enable <= 0;
                         counter      <= 0;
-                        turn_done    <= 0;
+                        //turn_done    <= 0;
                         if (!space)
                             state <= SP0;
                         else
@@ -69,7 +69,7 @@ module turn_remote_fsm (
                         index        <= 2;
                         enable_draw  <= 0;
                         throw_enable <= 1;
-                        turn_done    <= 0;
+                        //turn_done    <= 0;
                         if (counter < ONE_SECOND-1) begin
                             counter <= counter + 1;
                             state   <= SP0;
@@ -85,7 +85,7 @@ module turn_remote_fsm (
                         throw_enable <= 0;
                         counter      <= 0;
                         state        <= IDLE;
-                        turn_done    <= 1;
+                        //turn_done    <= 1;
                     end
 
                     default: state <= IDLE;

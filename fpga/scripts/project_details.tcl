@@ -47,6 +47,7 @@ set sv_files {
     ../rtl/drawing/draw_over.sv    
     ../rtl/drawing/over_rom.sv    
     ../rtl/drawing/start_rom.sv    
+    ../rtl/drawing/draw_wind.sv    
   
     ../rtl/keyboard/keyboard_controller.sv
     ../rtl/keyboard/PS2Receiver.sv
@@ -59,6 +60,7 @@ set sv_files {
     ../rtl/game_control/turn_local_fsm.sv
     ../rtl/game_control/turn_remote_fsm.sv
     ../rtl/game_control/game_fsm.sv
+    ../rtl/game_control/wind_ctl.sv
 
     ../rtl/players/draw_player_cat.sv
     ../rtl/players/draw_player_dog.sv

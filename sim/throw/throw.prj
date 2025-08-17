@@ -9,5 +9,5 @@
 # https://docs.xilinx.com/r/en-US/ug900-vivado-logic-simulation/Project-File-.prj-Syntax
 
 
-sv work ../../rtl/throw/throw_ctl.sv \
+sv work ../../rtl/throw/throw_ctl_dog.sv \
         throw_tb.sv

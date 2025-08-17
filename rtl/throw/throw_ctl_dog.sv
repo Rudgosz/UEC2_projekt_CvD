@@ -5,9 +5,11 @@ module throw_ctl_dog (
     input  logic enable,
     input  logic rst,
     input  logic [9:0] throw_force,
+    input  logic [6:0] wind_force,
     output logic signed [11:0] x_pos,
     output logic signed [11:0] y_pos,
-    output logic hit_dog
+    output logic hit_dog,
+    output logic throw_done
 );
 
     import vga_pkg::*;
@@ -16,35 +18,30 @@ module throw_ctl_dog (
     localparam int GRAVITY = 1;
     localparam int MOUSE_XPOS_DOG = 140;
     localparam int MOUSE_YPOS_DOG = 350;
-    localparam int IMAGE_Y_END = 700;
 
     localparam int INIT_FORCE = 18;
-    localparam int WIND = 50;
-
 
     localparam WALL_X_LEFT = 490;
     localparam WALL_X_RIGHT = 534;
     localparam WALL_TOP = 241;
-    localparam WALL_BOTTOM = 768;
 
     localparam CAT_X_LEFT = 0;
     localparam CAT_X_RIGHT = 157;
     localparam CAT_TOP = 427;
     localparam CAT_BOTTOM = 525;
     
-    
-
     int counter;
     int ms_counter;
 
     logic signed [11:0] ypos_0, xpos_0, ypos_0_fall;
     int time_0;
+    int time_0_fall;
     int signed v_0;
     int signed v_temp;
     int elapsed;
 
     int scaled_force;
-    int wind_offset;
+    int wind_effect;
     int elapsed_fall;
 
     typedef enum logic [1:0] {ST_IDLE, ST_THROW, ST_FALL, ST_END} state_t;
@@ -53,6 +50,16 @@ module throw_ctl_dog (
     logic hit_dog_reg;
     logic dog_in_range;
     logic dog_in_range_d;
+
+    always_comb begin
+        if (wind_force < 50) begin
+            wind_effect = -5 - ((50 - wind_force) * 5) / 50;
+        end else if (wind_force > 50) begin
+            wind_effect = 5 + ((wind_force - 50) * 5) / 50;
+        end else begin
+            wind_effect = 0;
+        end
+    end
 
     always_comb begin
         dog_in_range = (VER_PIXELS - y_pos >= CAT_TOP && VER_PIXELS - y_pos <= CAT_BOTTOM &&
@@ -76,15 +83,10 @@ module throw_ctl_dog (
 
     assign hit_dog = hit_dog_reg;
 
-
     always_comb begin
         scaled_force = (throw_force * INIT_FORCE) / 100;
-        if (WIND < 50)
-            wind_offset = -((50 - WIND) * throw_force) / 50;
-        else if (WIND > 50)
-            wind_offset = ((WIND - 50) * throw_force) / 50;
-        else
-            wind_offset = 0;
+        elapsed = ms_counter - time_0;
+        elapsed_fall = ms_counter - time_0_fall;
     end
 
     always_ff @(posedge clk) begin
@@ -103,10 +105,12 @@ module throw_ctl_dog (
 
     always_ff @(posedge clk) begin
         if (rst) begin
+            throw_done <= 0;
             state <= ST_IDLE;
             x_pos <= MOUSE_XPOS_DOG;
             y_pos <= MOUSE_YPOS_DOG;
             time_0 <= 0;
+            time_0_fall <= 0;
             v_0 <= 0;
             v_temp <= 0;
             ypos_0 <= MOUSE_YPOS_DOG;
@@ -115,6 +119,7 @@ module throw_ctl_dog (
         end else begin
             case (state)
                 ST_IDLE: begin
+                    throw_done <= 0;
                     x_pos <= MOUSE_XPOS_DOG;
                     y_pos <= MOUSE_YPOS_DOG;
                     if (enable) begin
@@ -128,45 +133,42 @@ module throw_ctl_dog (
                 end
 
                 ST_THROW: begin
-                    elapsed = ms_counter - time_0;
+                    throw_done <= 0;
                     v_temp <= v_0 - GRAVITY * elapsed;
                     y_pos <= ypos_0 + v_0 * elapsed - (GRAVITY * elapsed * elapsed) / 2;
-                    x_pos <= xpos_0 + (scaled_force + wind_offset) * elapsed;
+                    x_pos <= xpos_0 + (scaled_force + wind_effect) * elapsed;
                     
                     if (v_temp <= 0) begin
                         state <= ST_FALL;
-                        time_0 <= ms_counter;
+                        time_0_fall <= ms_counter;
                         ypos_0_fall <= y_pos;
                         xpos_0 <= x_pos;
                     end
                 end
 
                 ST_FALL: begin
-                    elapsed_fall = ms_counter - time_0;
+                    throw_done <= 0;
                     v_temp <= -GRAVITY * elapsed_fall;
                     y_pos <= ypos_0_fall - (GRAVITY * elapsed_fall * elapsed_fall) / 2;
+                    x_pos <= xpos_0 + (scaled_force + wind_effect) * elapsed_fall;
                     
-
-                    if (y_pos <= VER_PIXELS - 525) begin
+                    if (y_pos <= 190) begin
                         y_pos <= MOUSE_YPOS_DOG;
                         state <= ST_END;
                     end
 
                     if (VER_PIXELS - y_pos > WALL_TOP && HOR_PIXELS - x_pos <= WALL_X_RIGHT + 15 && HOR_PIXELS - x_pos >= WALL_X_LEFT - 15) begin
                         x_pos <= x_pos;
-                    end else begin
-                        x_pos <= xpos_0 + (scaled_force + wind_offset) * elapsed_fall;
                     end
 
-                    if(VER_PIXELS - y_pos <= WALL_TOP && VER_PIXELS - y_pos >= WALL_TOP - 15 && HOR_PIXELS - x_pos <= WALL_X_RIGHT + 15 && HOR_PIXELS - x_pos >= WALL_X_LEFT - 15) begin
+                    if(VER_PIXELS - y_pos <= WALL_TOP && VER_PIXELS - y_pos >= WALL_TOP - 15 && 
+                       HOR_PIXELS - x_pos <= WALL_X_RIGHT + 15 && HOR_PIXELS - x_pos >= WALL_X_LEFT - 15) begin
                         state <= ST_END;
                     end
-
-                                        
-
                 end
 
                 ST_END: begin
+                    throw_done <= 1;
                     x_pos <= MOUSE_XPOS_DOG;
                     y_pos <= MOUSE_YPOS_DOG;
 

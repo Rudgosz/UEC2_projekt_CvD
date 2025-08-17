@@ -25,6 +25,8 @@ sv work ../../rtl/vga_pkg.sv \
         ../../rtl/drawing/over_rom.sv \
         ../../rtl/drawing/start_rom.sv \
         ../../rtl/drawing/draw_start.sv \
+        ../../rtl/drawing/draw_wind.sv \
+        ../../rtl/game_control/wind_ctl.sv \
         ../../rtl/vga_if.sv \
         ../../rtl/keyboard/keyboard_controller.sv \
         ../../rtl/keyboard/PS2Receiver.sv \

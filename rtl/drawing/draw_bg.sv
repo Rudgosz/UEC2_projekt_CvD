@@ -11,9 +11,6 @@ module draw_bg (
     input  logic [11:0] rgb_background,
     output logic [19:0] bg_addr,
 
-    input  logic        rectangle_on,
-    input  logic [11:0] rgb_rectangle,
-
     input  logic        bar_on,
     input  logic [11:0] rgb_bar,
 

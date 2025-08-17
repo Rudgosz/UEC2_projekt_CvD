@@ -1,17 +1,10 @@
 module draw_player_cat (
     input  logic clk,
     input  logic rst,
-
-    input  logic turn_active,
-    input  logic throw_command,
-    input  logic [7:0] throw_power,
-
     input  logic [11:0] rgb_cat,
     input  logic hit_cat,
 
     output logic [13:0] cat_addr,
-    output logic [1:0]  cat_state,
-    output logic        throw_complete,
 
     vga_if.vga_in  vga_in,
     vga_if.vga_out vga_out
@@ -24,10 +17,6 @@ module draw_player_cat (
     localparam PLAYER_WIDTH  = 157;
     localparam PLAYER_HEIGHT = 99;
 
-    localparam IDLE   = 2'b00;
-    localparam THROW1 = 2'b01;
-    localparam THROW2 = 2'b10;
-
     localparam int HALF_SECOND_TICKS = 32_500_000;
 
     logic [10:0] hcount_d, vcount_d;
@@ -38,10 +27,6 @@ module draw_player_cat (
     logic [25:0] counter_cat;
     logic        flash_active;
     logic        hit_cat_reg;
-
-    logic [1:0]  state;
-    logic [23:0] throw_timer;
-    logic        throw_command_prev;
 
     logic inside_cat;
     logic [7:0] rel_x;
@@ -54,9 +39,6 @@ module draw_player_cat (
     assign rel_x = hcount_d - PLAYER_X;
     assign rel_y = vcount_d - PLAYER_Y;
     assign cat_addr = rel_y * PLAYER_WIDTH + rel_x;
-
-    assign throw_complete = (state == THROW2) && 
-                            (throw_timer > (1000000 + throw_power * 10000));
 
     always_ff @(posedge clk or posedge rst) begin
         if (rst) begin
@@ -90,10 +72,6 @@ module draw_player_cat (
 
     always_ff @(posedge clk or posedge rst) begin
         if (rst) begin
-            state <= IDLE;
-            throw_command_prev <= 0;
-            throw_timer <= 0;
-
             hcount_d <= 0;
             vcount_d <= 0;
             hsync_d  <= 0;
@@ -103,25 +81,6 @@ module draw_player_cat (
             rgb_in_d <= 0;
 
         end else begin
-            throw_command_prev <= throw_command;
-            case (state)
-                IDLE: 
-                    if (turn_active && throw_command && !throw_command_prev)
-                        state <= THROW1;
-
-                THROW1: 
-                    if (!throw_command) begin
-                        state <= THROW2;
-                        throw_timer <= 0;
-                    end
-
-                THROW2: 
-                    if (throw_complete) 
-                        state <= IDLE;
-                    else 
-                        throw_timer <= throw_timer + 1;
-            endcase
-
             hcount_d <= vga_in.hcount;
             vcount_d <= vga_in.vcount;
             hsync_d  <= vga_in.hsync;
@@ -131,8 +90,6 @@ module draw_player_cat (
             rgb_in_d <= vga_in.rgb;
         end
     end
-
-    assign cat_state = state;
 
     logic [11:0] rgb_nxt;
 

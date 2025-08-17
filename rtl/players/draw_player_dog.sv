@@ -2,16 +2,10 @@ module draw_player_dog (
     input  logic clk,
     input  logic rst,
 
-    input  logic turn_active,
-    input  logic throw_command,
-    input  logic [7:0] throw_power,
-
     input  logic [11:0] rgb_dog,
     input  logic hit_dog,
 
     output logic [14:0] dog_addr,
-    output logic [1:0]  dog_state,
-    output logic        throw_complete,
 
     vga_if.vga_in  vga_in,
     vga_if.vga_out vga_out
@@ -23,9 +17,6 @@ module draw_player_dog (
     localparam PLAYER_Y = 430;
     localparam PLAYER_WIDTH  = 140;
     localparam PLAYER_HEIGHT = 151;
-    localparam IDLE = 2'b00;
-    localparam THROW1 = 2'b01;
-    localparam THROW2 = 2'b10;
 
     localparam int HALF_SECOND_TICKS = 32_500_000;
 
@@ -38,10 +29,6 @@ module draw_player_dog (
     logic        flash_active;
     logic        hit_dog_reg;
 
-    logic [1:0]  state;
-    logic [23:0] throw_timer;
-    logic        throw_command_prev;
-
     logic inside_dog;
     logic [7:0] rel_x;
     logic [7:0] rel_y;
@@ -53,9 +40,6 @@ module draw_player_dog (
     assign rel_x = hcount_d - PLAYER_X;
     assign rel_y = vcount_d - PLAYER_Y;
     assign dog_addr = rel_y * PLAYER_WIDTH + rel_x;
-
-    assign throw_complete = (state == THROW2) && 
-                            (throw_timer > (1000000 + throw_power * 10000));
 
     always_ff @(posedge clk or posedge rst) begin
         if (rst) begin
@@ -89,10 +73,6 @@ module draw_player_dog (
 
     always_ff @(posedge clk or posedge rst) begin
         if (rst) begin
-            state <= IDLE;
-            throw_command_prev <= 0;
-            throw_timer <= 0;
-
             hcount_d <= 0;
             vcount_d <= 0;
             hsync_d  <= 0;
@@ -102,25 +82,6 @@ module draw_player_dog (
             rgb_in_d <= 0;
 
         end else begin
-            throw_command_prev <= throw_command;
-            case (state)
-                IDLE: 
-                    if (turn_active && throw_command && !throw_command_prev)
-                        state <= THROW1;
-
-                THROW1: 
-                    if (!throw_command) begin
-                        state <= THROW2;
-                        throw_timer <= 0;
-                    end
-
-                THROW2: 
-                    if (throw_complete) 
-                        state <= IDLE;
-                    else 
-                        throw_timer <= throw_timer + 1;
-            endcase
-
             hcount_d <= vga_in.hcount;
             vcount_d <= vga_in.vcount;
             hsync_d  <= vga_in.hsync;
@@ -130,8 +91,6 @@ module draw_player_dog (
             rgb_in_d <= vga_in.rgb;
         end
     end
-
-    assign dog_state = state;
 
     logic [11:0] rgb_nxt;
 

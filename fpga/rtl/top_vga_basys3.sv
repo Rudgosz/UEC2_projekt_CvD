@@ -16,8 +16,6 @@ module top_vga_basys3 (
         input  wire clk,
         input  wire btnC,
         input  wire btnU,
-        input  wire btnL,
-        input  wire btnR,
         input  wire btnD,
         output wire Vsync,
         output wire Hsync,
@@ -94,9 +92,6 @@ module top_vga_basys3 (
     top_vga u_top_vga (
         .clk65MHz(clk65MHz),
         .rst(btnC),
-        .btnU(btnU),
-        .btn_space_local(btnL),
-        .btn_enter_local(btnR),
         .btn_space_remote(btnU),
         .btn_enter_remote(btnD),
         .r(vgaRed),

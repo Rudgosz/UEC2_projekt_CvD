@@ -2,8 +2,6 @@ module draw_rectangle_cat (
     input  logic        clk,
     input  logic        rst,
     input  logic        space,
-    output logic        rectangle_on,
-    output logic [11:0] rgb_rectangle,
     output logic [9:0]  throw_force,
     vga_if.vga_in      vga_in,
     vga_if.vga_out      vga_out
@@ -21,6 +19,8 @@ module draw_rectangle_cat (
     logic [9:0]  rect_width;
     logic [31:0] step_counter;
     logic        space_prev;
+    logic        rectangle_on;
+    logic [11:0] rgb_rectangle;
 
     always_ff @(posedge clk or posedge rst) begin
         if (rst) begin

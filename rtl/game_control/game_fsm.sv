@@ -10,7 +10,6 @@ module game_fsm (
     output logic dog_turn,
     output logic cat_turn,
     output logic [2:0] state_game_fsm,
-    output logic start_game,
     output logic next_turn,
     output logic enter_start_remote
 );
@@ -33,7 +32,6 @@ module game_fsm (
             state       <= START_SCREEN;
             cat_turn    <= 0;
             dog_turn    <= 0;
-            start_game  <= 0;
             next_turn   <= 0;
         end else begin
             if (hp_local == 0 || hp_remote == 0) begin
@@ -48,13 +46,11 @@ module game_fsm (
                         if (enter_pressed_local) begin
                             dog_turn   <= 1;
                             cat_turn   <= 0;
-                            start_game <= 1;
                             state      <= PLAYER_TURN;
                         end else if (enter_pressed_remote) begin
                             enter_start_remote <= 1;
                             dog_turn   <= 0;
                             cat_turn   <= 1;
-                            start_game <= 1;
                             state      <= OPPONENT_TURN;
                         end
                     end
@@ -96,7 +92,6 @@ module game_fsm (
                         cat_turn <= 0;
                         if (enter_pressed_local || enter_pressed_remote) begin
                             state      <= START_SCREEN;
-                            start_game <= 0;
                         end
                     end
 

@@ -51,18 +51,16 @@ module throw_ctl_cat (
     logic cat_in_range;
     logic cat_in_range_d;
 
-    // Zoptymalizowane obliczenia efektu wiatru
     always_comb begin
         if (wind_force > 50) begin
-            wind_effect = -5 - ((wind_force - 50) >> 3); // ~/8 zamiast /50 *5
+            wind_effect = -5 - ((wind_force - 50) >> 3);
         end else if (wind_force < 50) begin
-            wind_effect = 5 + ((50 - wind_force) >> 3);  // ~/8 zamiast /50 *5
+            wind_effect = 5 + ((50 - wind_force) >> 3);
         end else begin
             wind_effect = 0;
         end
     end
 
-    // Proste sprawdzenie zakresu psa
     always_comb begin
         cat_in_range = (VER_PIXELS - y_pos >= DOG_TOP && VER_PIXELS - y_pos <= DOG_BOTTOM &&
                         x_pos <= DOG_X_RIGHT && x_pos >= DOG_X_LEFT);
@@ -85,20 +83,18 @@ module throw_ctl_cat (
 
     assign hit_cat = hit_cat_reg;
 
-    // Zoptymalizowane obliczenia siły i czasu
     always_comb begin
-        scaled_force_cat = (throw_force * INIT_FORCE) >> 6; // Przybliżenie /100 przez >>6 (64)
+        scaled_force_cat = (throw_force * INIT_FORCE) >> 6;
         elapsed_cat = ms_counter_cat - time_0_cat;
         elapsed_cat_fall = ms_counter_cat - time_0_fall_cat;
     end
 
-    // Licznik czasu - zoptymalizowany (mniejsza stała)
     always_ff @(posedge clk) begin
         if (rst) begin
             counter_cat <= 0;
             ms_counter_cat <= 0;
         end else begin
-            if (counter_cat == 1299980) begin // Zmniejszona stała dla szybszego symulowania
+            if (counter_cat == 1299980) begin
                 ms_counter_cat <= ms_counter_cat + 1;
                 counter_cat <= 0;
             end else begin
@@ -139,7 +135,6 @@ module throw_ctl_cat (
                 ST_THROW: begin
                     throw_done <= 0;
                     v_temp_cat <= v_0_cat - (GRAVITY * elapsed_cat);
-                    // Uproszczone obliczenia pozycji - przesunięcie bitowe zamiast dzielenia
                     y_pos <= ypos_0 + (v_0_cat * elapsed_cat) - ((GRAVITY * elapsed_cat * elapsed_cat) >> 1);
                     x_pos <= xpos_0 + (scaled_force_cat + wind_effect) * elapsed_cat;
                     
@@ -154,7 +149,6 @@ module throw_ctl_cat (
                 ST_FALL: begin
                     throw_done <= 0;
                     v_temp_cat <= -(GRAVITY * elapsed_cat_fall);
-                    // Uproszczone obliczenia pozycji
                     y_pos <= ypos_0_fall - ((GRAVITY * elapsed_cat_fall * elapsed_cat_fall) >> 1);
                     x_pos <= xpos_0 + (scaled_force_cat + wind_effect) * elapsed_cat_fall;
                     

@@ -5,7 +5,7 @@ module wind_ctl (
     input  logic next_turn,
     output logic [6:0] wind
 );
-    // 7-bit LFSR (cycle length 127)
+
     localparam [6:0] LFSR_SEED = 7'b0011010;
     
     logic [6:0] lfsr;
@@ -21,7 +21,7 @@ module wind_ctl (
             next_turn_prev <= next_turn;
             
             if (next_turn && !next_turn_prev) begin
-                lfsr <= {lfsr[5:0], lfsr[6] ^ lfsr[4]}; // x^7 + x^5 + 1
+                lfsr <= {lfsr[5:0], lfsr[6] ^ lfsr[4]};
             end
             
             if (enter_start_remote) begin
@@ -30,12 +30,11 @@ module wind_ctl (
         end
     end
     
-    // Output the full 7-bit LFSR value (0-127)
     always_comb begin
         if (enter_flag_latched) begin
-            wind = 127 - lfsr;  // Output full 7-bit value (0-127)
+            wind = 127 - lfsr;
         end else begin
-            wind = lfsr;  // Output full 7-bit value (0-127)
+            wind = lfsr;
         end
     end
 endmodule

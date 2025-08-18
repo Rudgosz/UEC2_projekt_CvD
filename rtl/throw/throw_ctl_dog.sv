@@ -51,12 +51,11 @@ module throw_ctl_dog (
     logic dog_in_range;
     logic dog_in_range_d;
 
-    // Zoptymalizowane obliczenia efektu wiatru z przesunięciami bitowymi
     always_comb begin
         if (wind_force < 50) begin
-            wind_effect = -5 - ((50 - wind_force) >> 3); // ~/8 zamiast /50 *5
+            wind_effect = -5 - ((50 - wind_force) >> 3);
         end else if (wind_force > 50) begin
-            wind_effect = 5 + ((wind_force - 50) >> 3);  // ~/8 zamiast /50 *5
+            wind_effect = 5 + ((wind_force - 50) >> 3);
         end else begin
             wind_effect = 0;
         end
@@ -84,20 +83,18 @@ module throw_ctl_dog (
 
     assign hit_dog = hit_dog_reg;
 
-    // Zoptymalizowane obliczenia siły i czasu
     always_comb begin
-        scaled_force = (throw_force * INIT_FORCE) >> 6; // Przybliżenie /100 przez >>6 (64)
+        scaled_force = (throw_force * INIT_FORCE) >> 6;
         elapsed = ms_counter - time_0;
         elapsed_fall = ms_counter - time_0_fall;
     end
 
-    // Licznik czasu - zoptymalizowany (mniejsza stała)
     always_ff @(posedge clk) begin
         if (rst) begin
             counter <= 0;
             ms_counter <= 0;
         end else begin
-            if (counter == 1299980) begin // Zmniejszona stała dla szybszego symulowania
+            if (counter == 1299980) begin
                 ms_counter <= ms_counter + 1;
                 counter <= 0;
             end else begin
@@ -138,7 +135,6 @@ module throw_ctl_dog (
                 ST_THROW: begin
                     throw_done <= 0;
                     v_temp <= v_0 - (GRAVITY * elapsed);
-                    // Uproszczone obliczenia pozycji - usunięcie dzielenia przez 2
                     y_pos <= ypos_0 + (v_0 * elapsed) - ((GRAVITY * elapsed * elapsed) >> 1);
                     x_pos <= xpos_0 + (scaled_force + wind_effect) * elapsed;
                     
@@ -153,7 +149,6 @@ module throw_ctl_dog (
                 ST_FALL: begin
                     throw_done <= 0;
                     v_temp <= -(GRAVITY * elapsed_fall);
-                    // Uproszczone obliczenia pozycji
                     y_pos <= ypos_0_fall - ((GRAVITY * elapsed_fall * elapsed_fall) >> 1);
                     x_pos <= xpos_0 + (scaled_force + wind_effect) * elapsed_fall;
                     

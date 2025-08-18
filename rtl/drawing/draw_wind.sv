@@ -8,7 +8,7 @@ module draw_wind (
 
     import vga_pkg::*;
 
-    localparam BIG_RECT_WIDTH = 116;
+    localparam BIG_RECT_WIDTH = 143;
     localparam BIG_RECT_HEIGHT = 16;
     localparam BIG_RECT_COLOR = 12'hEFF;
     
@@ -26,7 +26,7 @@ module draw_wind (
     logic [10:0] small_rect_x_left;
     
     always_comb begin
-        small_rect_x_center = BIG_RECT_X + 8 + ((BIG_RECT_WIDTH - SMALL_RECT_WIDTH) * (100-wind_force) / 100);
+        small_rect_x_center = BIG_RECT_X + 8 + ((BIG_RECT_WIDTH - SMALL_RECT_WIDTH) * (127-wind_force) / 127);
         small_rect_x_left = small_rect_x_center - (SMALL_RECT_WIDTH / 2);
     end
 

@@ -204,9 +204,7 @@ module top_vga (
         .space          (space),
         .enable_draw    (enable_draw_dog),
         .index          (state_dog),
-        .space_pin_tx   (),
         .throw_enable   (throw_enable_dog)
-        //.turn_done(turn_done_local)
     );
 
     turn_remote_fsm u_turn_remote_fsm (
@@ -217,7 +215,6 @@ module top_vga (
         .space          (space_remote),
         .index          (state_cat),
         .throw_enable   (throw_enable_cat)
-        //.turn_done(turn_done_remote)
     );
 
     keyboard_controller u_keyboard (

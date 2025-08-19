@@ -54,6 +54,7 @@ module top_vga_basys3 (
      */
 
     assign JA1 = pclk_mirror;
+    assign pclk = clk65MHz;
 
 
     /**

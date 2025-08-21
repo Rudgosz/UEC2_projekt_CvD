@@ -73,6 +73,9 @@ module top_vga (
     //VGA signals from draw_wind
     vga_if vga_wind_if();
 
+    //VGA signals from draw_wind_background
+    vga_if vga_wind_bg_if();
+
     //signals for draw_player_dog and dog_rom
     logic [14:0] dog_addr;
     logic [11:0] rgb_dog;
@@ -387,7 +390,7 @@ module top_vga (
         .rst        (rst),
         .x_pos      (x_pos_dog),
         .y_pos      (y_pos_dog),
-        .vga_in     (vga_hp_if.vga_in),
+        .vga_in     (vga_wind_bg_if.vga_in),
         .vga_out    (vga_projectile_dog_if.vga_out)
     );
 
@@ -421,6 +424,13 @@ module top_vga (
         .wind_force     (wind_force),
         .vga_in         (vga_projectile_cat_if.vga_in),
         .vga_out        (vga_wind_if.vga_out)
+    );
+
+    draw_wind_background u_draw_wind_background (
+        .clk            (clk65MHz),
+        .rst            (rst),
+        .vga_in         (vga_hp_if.vga_in),
+        .vga_out        (vga_wind_bg_if.vga_out)
     );
 
     wind_ctl u_wind_ctl (

@@ -35,7 +35,7 @@ module throw_ctl_cat (
 
     logic signed [11:0] ypos_0, xpos_0, ypos_0_fall;
     int time_0_cat;
-    int time_0_fall_cat;
+     int time_0_fall_cat;
     int signed v_0_cat;
     int signed v_temp_cat;
     int elapsed_cat;
@@ -110,7 +110,6 @@ module throw_ctl_cat (
             x_pos <= MOUSE_XPOS_CAT;
             y_pos <= MOUSE_YPOS_CAT;
             time_0_cat <= 0;
-            time_0_fall_cat <= 0;
             v_0_cat <= 0;
             v_temp_cat <= 0;
             ypos_0 <= MOUSE_YPOS_CAT;
@@ -134,8 +133,8 @@ module throw_ctl_cat (
 
                 ST_THROW: begin
                     throw_done <= 0;
-                    v_temp_cat <= v_0_cat - (GRAVITY * elapsed_cat);
-                    y_pos <= ypos_0 + (v_0_cat * elapsed_cat) - ((GRAVITY * elapsed_cat * elapsed_cat) >> 1);
+                    v_temp_cat <= v_0_cat - GRAVITY * elapsed_cat;
+                    y_pos <= ypos_0 + v_0_cat * elapsed_cat - (GRAVITY * elapsed_cat * elapsed_cat) / 2;
                     x_pos <= xpos_0 + (scaled_force_cat + wind_effect) * elapsed_cat;
                     
                     if (v_temp_cat <= 0) begin
@@ -148,8 +147,8 @@ module throw_ctl_cat (
 
                 ST_FALL: begin
                     throw_done <= 0;
-                    v_temp_cat <= -(GRAVITY * elapsed_cat_fall);
-                    y_pos <= ypos_0_fall - ((GRAVITY * elapsed_cat_fall * elapsed_cat_fall) >> 1);
+                    v_temp_cat <= -GRAVITY * elapsed_cat_fall;
+                    y_pos <= ypos_0_fall - (GRAVITY * elapsed_cat_fall * elapsed_cat_fall) / 2;
                     x_pos <= xpos_0 + (scaled_force_cat + wind_effect) * elapsed_cat_fall;
                     
                     if (y_pos <= 190) begin

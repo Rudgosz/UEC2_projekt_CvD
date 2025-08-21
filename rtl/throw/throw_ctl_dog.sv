@@ -134,8 +134,8 @@ module throw_ctl_dog (
 
                 ST_THROW: begin
                     throw_done <= 0;
-                    v_temp <= v_0 - (GRAVITY * elapsed);
-                    y_pos <= ypos_0 + (v_0 * elapsed) - ((GRAVITY * elapsed * elapsed) >> 1);
+                    v_temp <= v_0 - GRAVITY * elapsed;
+                    y_pos <= ypos_0 + v_0 * elapsed - (GRAVITY * elapsed * elapsed) / 2;
                     x_pos <= xpos_0 + (scaled_force + wind_effect) * elapsed;
                     
                     if (v_temp <= 0) begin
@@ -148,8 +148,8 @@ module throw_ctl_dog (
 
                 ST_FALL: begin
                     throw_done <= 0;
-                    v_temp <= -(GRAVITY * elapsed_fall);
-                    y_pos <= ypos_0_fall - ((GRAVITY * elapsed_fall * elapsed_fall) >> 1);
+                    v_temp <= -GRAVITY * elapsed_fall;
+                    y_pos <= ypos_0_fall - (GRAVITY * elapsed_fall * elapsed_fall) / 2;
                     x_pos <= xpos_0 + (scaled_force + wind_effect) * elapsed_fall;
                     
                     if (y_pos <= 190) begin

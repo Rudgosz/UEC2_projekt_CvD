@@ -48,6 +48,7 @@ set sv_files {
     ../rtl/drawing/over_rom.sv    
     ../rtl/drawing/start_rom.sv    
     ../rtl/drawing/draw_wind.sv    
+    ../rtl/drawing/draw_wind_background.sv    
   
     ../rtl/keyboard/keyboard_controller.sv
     ../rtl/keyboard/PS2Receiver.sv
@@ -87,4 +88,5 @@ set mem_files {
    ../rtl/data/players/dog_full.dat
    ../rtl/data/background/game_over.dat
    ../rtl/data/background/start_screen.dat
+   ../rtl/data/wind/wind.dat
 }

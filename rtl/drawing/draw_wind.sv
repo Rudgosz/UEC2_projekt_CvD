@@ -8,26 +8,32 @@ module draw_wind (
 
     import vga_pkg::*;
 
-    localparam BIG_RECT_WIDTH = 143;
-    localparam BIG_RECT_HEIGHT = 16;
-    localparam BIG_RECT_COLOR = 12'hEFF;
-    
-    localparam SMALL_RECT_WIDTH = 16;
-    localparam SMALL_RECT_HEIGHT = 16;
-    localparam SMALL_RECT_COLOR = 12'h059;
-    
-    localparam BIG_RECT_X = (HOR_PIXELS - BIG_RECT_WIDTH) / 2;
-    localparam BIG_RECT_Y = 40;
-    
-    localparam BORDER_COLOR = 12'hBDF;
-    localparam BORDER_WIDTH = 3;
-    
-    logic [10:0] small_rect_x_center;
-    logic [10:0] small_rect_x_left;
-    
+    localparam RECT_SIZE = 16;
+    localparam RECT_HALF = RECT_SIZE / 2;
+    localparam RECT_COLOR = 12'h059;
+    localparam SCREEN_CENTER_X = HOR_PIXELS / 2;
+    localparam SCREEN_CENTER_Y = 48;
+    localparam BASE_OFFSET = 50;
+
+    logic signed [10:0] rect_center_x;
+    logic [10:0] rect_left, rect_right, rect_top, rect_bottom;
+
     always_comb begin
-        small_rect_x_center = BIG_RECT_X + 8 + ((BIG_RECT_WIDTH - SMALL_RECT_WIDTH) * (127-wind_force) / 127);
-        small_rect_x_left = small_rect_x_center - (SMALL_RECT_WIDTH / 2);
+        rect_center_x = SCREEN_CENTER_X - BASE_OFFSET + (100 - wind_force);
+        rect_left = rect_center_x - RECT_HALF;
+        rect_right = rect_center_x + RECT_HALF;
+        rect_top = SCREEN_CENTER_Y - RECT_HALF;
+        rect_bottom = SCREEN_CENTER_Y + RECT_HALF;
+    end
+
+    logic in_rect;
+
+
+    always_comb begin
+        in_rect = (vga_in.hcount >= rect_left) && 
+                  (vga_in.hcount <= rect_right) && 
+                  (vga_in.vcount >= rect_top) && 
+                  (vga_in.vcount <= rect_bottom);
     end
 
     always_ff @(posedge clk) begin
@@ -44,29 +50,16 @@ module draw_wind (
             vga_out.hsync  <= vga_in.hsync;
             vga_out.hblnk  <= vga_in.hblnk;
             vga_out.vcount <= vga_in.vcount;
-            vga_out.vsync <= vga_in.vsync;
+            vga_out.vsync  <= vga_in.vsync;
             vga_out.vblnk  <= vga_in.vblnk;
             
-            if(vga_in.vblnk || vga_in.hblnk) begin            
+            if (vga_in.vblnk || vga_in.hblnk) begin            
                 vga_out.rgb <= 12'h0_0_0;
-            end else begin 
-                if((vga_in.hcount >= BIG_RECT_X - BORDER_WIDTH && vga_in.hcount < BIG_RECT_X + BIG_RECT_WIDTH + BORDER_WIDTH &&
-                   vga_in.vcount >= BIG_RECT_Y - BORDER_WIDTH && vga_in.vcount < BIG_RECT_Y + BIG_RECT_HEIGHT + BORDER_WIDTH) &&
-                   !(vga_in.hcount >= BIG_RECT_X && vga_in.hcount < BIG_RECT_X + BIG_RECT_WIDTH &&
-                   vga_in.vcount >= BIG_RECT_Y && vga_in.vcount < BIG_RECT_Y + BIG_RECT_HEIGHT)) begin
-                    vga_out.rgb <= BORDER_COLOR;
-                end else if(vga_in.hcount >= BIG_RECT_X && vga_in.hcount < BIG_RECT_X + BIG_RECT_WIDTH &&
-                   vga_in.vcount >= BIG_RECT_Y && vga_in.vcount < BIG_RECT_Y + BIG_RECT_HEIGHT) begin
-                    if(vga_in.hcount >= small_rect_x_left && vga_in.hcount < small_rect_x_left + SMALL_RECT_WIDTH &&
-                       vga_in.vcount >= BIG_RECT_Y && vga_in.vcount < BIG_RECT_Y + SMALL_RECT_HEIGHT) begin
-                        vga_out.rgb <= SMALL_RECT_COLOR;
-                    end else begin
-                        vga_out.rgb <= BIG_RECT_COLOR;
-                    end
-                end else begin
-                    vga_out.rgb <= vga_in.rgb;
-                end
+            end else if (in_rect) begin
+                vga_out.rgb <= RECT_COLOR;
+                vga_out.rgb <= vga_in.rgb;
             end
         end
     end
+
 endmodule

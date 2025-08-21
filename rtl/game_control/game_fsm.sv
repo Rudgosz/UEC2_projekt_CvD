@@ -11,7 +11,8 @@ module game_fsm (
     output logic cat_turn,
     output logic [2:0] state_game_fsm,
     output logic next_turn,
-    output logic enter_start_remote
+    output logic enter_start_remote,
+    output logic reset_hp
 );
 
     typedef enum logic [2:0] {
@@ -33,75 +34,75 @@ module game_fsm (
             cat_turn    <= 0;
             dog_turn    <= 0;
             next_turn   <= 0;
+            reset_hp    <= 0;
         end else begin
-            if (hp_local == 0 || hp_remote == 0) begin
-                state    <= GAME_OVER;
-                dog_turn <= 0;
-                cat_turn <= 0;
-                next_turn   <= 0;
-            end else begin
-                case (state)
-                    START_SCREEN: begin
-                        next_turn   <= 0;
-                        if (enter_pressed_local) begin
-                            dog_turn   <= 1;
-                            cat_turn   <= 0;
-                            state      <= PLAYER_TURN;
-                        end else if (enter_pressed_remote) begin
-                            enter_start_remote <= 1;
-                            dog_turn   <= 0;
-                            cat_turn   <= 1;
-                            state      <= OPPONENT_TURN;
-                        end
+            case (state)
+                START_SCREEN: begin
+                    reset_hp    <= 1;
+                    next_turn   <= 0;
+                    if (enter_pressed_local) begin
+                        reset_hp    <= 0;
+                        dog_turn   <= 1;
+                        cat_turn   <= 0;
+                        state      <= PLAYER_TURN;
+                    end else if (enter_pressed_remote) begin
+                        reset_hp    <= 0;
+                        enter_start_remote <= 1;
+                        dog_turn   <= 0;
+                        cat_turn   <= 1;
+                        state      <= OPPONENT_TURN;
                     end
+                end
 
-                    PLAYER_TURN: begin
-                        enter_start_remote <= 0;
-                        next_turn   <= 1;
-                        if (turn_done_dog) begin
-                            state <= CHECK_WIN;
-                        end
+                PLAYER_TURN: begin
+                    enter_start_remote <= 0;
+                    next_turn   <= 1;
+                    if (turn_done_dog) begin
+                        state <= CHECK_WIN;
                     end
+                end
 
-                    OPPONENT_TURN: begin
-                        enter_start_remote <= 0;
-                        next_turn   <= 1;
-                        if (turn_done_cat) begin
-                            state <= CHECK_WIN;
-                        end
+                OPPONENT_TURN: begin
+                    enter_start_remote <= 0;
+                    next_turn   <= 1;
+                    if (turn_done_cat) begin
+                        state <= CHECK_WIN;
                     end
+                end
 
-                    CHECK_WIN: begin
-                        enter_start_remote <= 0;
-                        next_turn   <= 0;
-                        if (cat_turn) begin
-                            dog_turn <= 1;
-                            cat_turn <= 0;
-                            state    <= PLAYER_TURN;
-                        end else begin
-                            dog_turn <= 0;
-                            cat_turn <= 1;
-                            state    <= OPPONENT_TURN;
-                        end
-                    end
-
-                    GAME_OVER: begin
-                        enter_start_remote <= 0;
-                        next_turn   <= 0;
-                        dog_turn <= 0;
+                CHECK_WIN: begin
+                    enter_start_remote <= 0;
+                    next_turn   <= 0;
+                    // Sprawdź warunek zakończenia gry przed zmianą tury
+                    if (hp_local == 0 || hp_remote == 0) begin
+                        state <= GAME_OVER;
+                    end else if (cat_turn) begin
+                        dog_turn <= 1;
                         cat_turn <= 0;
-                        if (enter_pressed_local || enter_pressed_remote) begin
-                            state      <= START_SCREEN;
-                        end
-                    end
-
-                    default: begin
-                        state    <= START_SCREEN;
+                        state    <= PLAYER_TURN;
+                    end else begin
                         dog_turn <= 0;
-                        cat_turn <= 0;
+                        cat_turn <= 1;
+                        state    <= OPPONENT_TURN;
                     end
-                endcase
-            end
+                end
+
+                GAME_OVER: begin
+                    enter_start_remote <= 0;
+                    next_turn   <= 0;
+                    dog_turn <= 0;
+                    cat_turn <= 0;
+                    if (enter_pressed_local || enter_pressed_remote) begin
+                        state      <= START_SCREEN;
+                    end
+                end
+
+                default: begin
+                    state    <= START_SCREEN;
+                    dog_turn <= 0;
+                    cat_turn <= 0;
+                end
+            endcase
         end
     end
 endmodule

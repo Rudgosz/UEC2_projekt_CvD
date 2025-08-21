@@ -177,6 +177,7 @@ module top_vga (
 
     logic next_turn;
     logic enter_start_remote;
+    logic reset_hp;
 
 
     /**
@@ -197,7 +198,8 @@ module top_vga (
         .cat_turn               (cat_turn),
         .state_game_fsm         (game_state),
         .next_turn              (next_turn),
-        .enter_start_remote     (enter_start_remote)
+        .enter_start_remote     (enter_start_remote),
+        .reset_hp               (reset_hp)
     );
 
     turn_local_fsm u_turn_local_fsm (
@@ -406,16 +408,17 @@ module top_vga (
     );
 
     health_bars u_health_bars(
-        .clk        (clk65MHz),
-        .rst        (rst),
-        .hit_cat    (hit_cat),
-        .hit_dog    (hit_dog),
-        .hp_cat     (hp_remote),
-        .hp_dog     (hp_local),
-        .bar_on     (bar_on),
-        .rgb_bar    (rgb_bar),
-        .vga_in     (vga_cat_if.vga_in),
-        .vga_out    (vga_hp_if.vga_out)
+        .clk            (clk65MHz),
+        .rst            (rst),
+        .hit_cat        (hit_cat),
+        .hit_dog        (hit_dog),
+        .hp_cat         (hp_remote),
+        .hp_dog         (hp_local),
+        .reset_hp       (reset_hp),
+        .bar_on         (bar_on),
+        .rgb_bar        (rgb_bar),
+        .vga_in         (vga_cat_if.vga_in),
+        .vga_out        (vga_hp_if.vga_out)
     );
 
     draw_wind u_draw_wind (

@@ -3,6 +3,7 @@ module health_bars (
     input  logic        rst,
     input  logic        hit_cat, // damage dla kota
     input  logic        hit_dog,
+    input  logic        reset_hp,
     output logic [11:0] rgb_bar,
     output logic        bar_on,
     output logic [9:0]  hp_cat,
@@ -12,7 +13,7 @@ module health_bars (
 );
 
 localparam HEALTH_MAX = 500;
-localparam DAMAGE = 50;
+localparam DAMAGE = 250;
 
 localparam Y_START = 6;
 localparam Y_END = 26;
@@ -31,8 +32,8 @@ localparam FRAME_Y_END   = 29;
 logic [9:0] health_cat;
 logic [9:0] health_dog;
 
-always_ff @(posedge clk or posedge rst) begin
-    if (rst) begin
+always_ff @(posedge clk) begin
+    if (rst || reset_hp) begin
         health_cat <= HEALTH_MAX;
         health_dog <= HEALTH_MAX;
     end else begin

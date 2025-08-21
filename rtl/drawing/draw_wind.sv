@@ -15,19 +15,18 @@ module draw_wind (
     localparam SCREEN_CENTER_Y = 48;
     localparam BASE_OFFSET = 50;
 
-    logic signed [10:0] rect_center_x;
+    logic [10:0] rect_center_x;
     logic [10:0] rect_left, rect_right, rect_top, rect_bottom;
 
     always_comb begin
         rect_center_x = SCREEN_CENTER_X - BASE_OFFSET + (100 - wind_force);
-        rect_left = rect_center_x - RECT_HALF;
+        rect_left = (rect_center_x > RECT_HALF) ? (rect_center_x - RECT_HALF) : 0;
         rect_right = rect_center_x + RECT_HALF;
-        rect_top = SCREEN_CENTER_Y - RECT_HALF;
+        rect_top = (SCREEN_CENTER_Y > RECT_HALF) ? (SCREEN_CENTER_Y - RECT_HALF) : 0;
         rect_bottom = SCREEN_CENTER_Y + RECT_HALF;
     end
 
     logic in_rect;
-
 
     always_comb begin
         in_rect = (vga_in.hcount >= rect_left) && 
@@ -56,8 +55,9 @@ module draw_wind (
             if (vga_in.vblnk || vga_in.hblnk) begin            
                 vga_out.rgb <= 12'h0_0_0;
             end else if (in_rect) begin
-                vga_out.rgb <= RECT_COLOR;
-                vga_out.rgb <= vga_in.rgb;
+                vga_out.rgb <= RECT_COLOR;  // Tylko jedno przypisanie!
+            end else begin
+                vga_out.rgb <= vga_in.rgb;  // Domyślnie przekazuj wejściowy RGB
             end
         end
     end

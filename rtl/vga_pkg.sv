@@ -1,3 +1,11 @@
+/**
+ * 2025  AGH University of Science and Technology
+ * MTM UEC2
+ * Cat vs Dog - UEC2 Final Project
+ *
+ *  Maciej Rogoż, Artur Sadłoń
+ */
+
 package vga_pkg;
 
     // Parameters for VGA Display 1024 x 768 @ 60fps using a 65 MHz clock;

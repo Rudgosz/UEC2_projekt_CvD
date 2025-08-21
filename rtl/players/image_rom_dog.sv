@@ -1,3 +1,11 @@
+/**
+ * 2025  AGH University of Science and Technology
+ * MTM UEC2
+ * Cat vs Dog - UEC2 Final Project
+ *
+ *  Maciej Rogoż, Artur Sadłoń
+ */
+
 module image_rom_dog (
         input  logic clk ,
         input  logic [14:0] address,

@@ -16,6 +16,12 @@
 // Revision 0.01 - File Created
 // Additional Comments:
 // 
+// Modified by:
+// 2025  AGH University of Science and Technology
+// MTM UEC2
+// Cat vs Dog - UEC2 Final Project
+//
+// Maciej Rogoż, Artur Sadłoń
 //////////////////////////////////////////////////////////////////////////////////
 
 

@@ -1,23 +1,13 @@
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date: 07/27/2016 02:04:22 PM
-// Design Name: 
-// Module Name: debouncer
-// Project Name: 
-// Target Devices: 
-// Tool Versions: 
-// Description: 
-// 
-// Dependencies: 
-// 
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
-// 
-//////////////////////////////////////////////////////////////////////////////////
-
+/**
+ * Company: Digilent
+ *
+ * Modified by:
+ * 2025  AGH University of Science and Technology
+ * MTM UEC2
+ * Cat vs Dog - UEC2 Final Project
+ *
+ *  Maciej Rogoż, Artur Sadłoń
+ */
 
 module debouncer(
     input clk,

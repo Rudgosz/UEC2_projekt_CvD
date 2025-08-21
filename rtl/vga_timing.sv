@@ -1,10 +1,9 @@
 /**
- * Copyright (C) 2025  AGH University of Science and Technology
+ * 2025  AGH University of Science and Technology
  * MTM UEC2
- * Author: Piotr Kaczmarczyk
+ * Cat vs Dog - UEC2 Final Project
  *
- * Description:
- * Vga timing controller.
+ *  Maciej Rogoż, Artur Sadłoń
  */
 
 module vga_timing (

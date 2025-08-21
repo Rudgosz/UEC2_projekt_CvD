@@ -1,15 +1,9 @@
 /**
- * San Jose State University
- * EE178 Lab #4
- * Author: prof. Eric Crabilla
- *
- * Modified by:
  * 2025  AGH University of Science and Technology
  * MTM UEC2
- * Piotr Kaczmarczyk
+ * Cat vs Dog - UEC2 Final Project
  *
- * Description:
- * The project top module.
+ *  Maciej Rogoż, Artur Sadłoń
  */
 
 module top_vga (
@@ -122,24 +116,6 @@ module top_vga (
 
     assign SPACE_TX = space;
     assign ENTER_TX = enter;
-
-
-    // logic SPACE_RX_sync, SPACE_RX_meta;
-    // logic ENTER_RX_sync, ENTER_RX_meta;
-
-    // always_ff @(posedge clk65MHz or posedge rst) begin
-    //     if (rst) begin
-    //         SPACE_RX_meta <= 0;
-    //         SPACE_RX_sync <= 0;
-    //         ENTER_RX_meta <= 0;
-    //         ENTER_RX_sync <= 0;
-    //     end else begin
-    //         SPACE_RX_meta <= SPACE_RX;
-    //         SPACE_RX_sync <= SPACE_RX_meta;
-    //         ENTER_RX_meta <= ENTER_RX;
-    //         ENTER_RX_sync <= ENTER_RX_meta;
-    //     end
-    // end
 
     assign space_remote = SPACE_RX || btn_space_remote;
     assign enter_remote = ENTER_RX || btn_enter_remote;

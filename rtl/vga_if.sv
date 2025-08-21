@@ -1,3 +1,11 @@
+/**
+ * 2025  AGH University of Science and Technology
+ * MTM UEC2
+ * Cat vs Dog - UEC2 Final Project
+ *
+ *  Maciej Rogoż, Artur Sadłoń
+ */
+
 interface vga_if;
 
     logic [10:0] hcount;

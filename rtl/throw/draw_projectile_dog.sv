@@ -9,6 +9,7 @@
 module draw_projectile_dog (
     input  logic clk,
     input  logic rst,
+    input  logic active,
     input  logic [11:0] x_pos,
     input  logic [11:0] y_pos,
     vga_if.vga_in  vga_in,
@@ -73,7 +74,7 @@ module draw_projectile_dog (
             dx <= hcount_delay - center_x;
             dy <= vcount_delay - center_y;
 
-            if (dx*dx + dy*dy <= RADIUS*RADIUS)
+            if (active && dx*dx + dy*dy <= RADIUS*RADIUS)
                 vga_out.rgb <= 12'hAAA;
             else
                 vga_out.rgb <= rgb_delay;

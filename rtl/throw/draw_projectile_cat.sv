@@ -9,6 +9,7 @@
 module draw_projectile_cat (
     input  logic clk,
     input  logic rst,
+    input  logic active,
     input  logic [11:0] x_pos,
     input  logic [11:0] y_pos,
     vga_if.vga_in  vga_in,
@@ -73,7 +74,7 @@ module draw_projectile_cat (
             dx_cat <= hcount_delay - center_x_cat;
             dy_cat <= vcount_delay - center_y_cat;
 
-            if (dx_cat*dx_cat + dy_cat*dy_cat <= RADIUS*RADIUS)
+            if (active && dx_cat*dx_cat + dy_cat*dy_cat <= RADIUS*RADIUS)
                 vga_out.rgb <= 12'hF00;
             else
                 vga_out.rgb <= rgb_delay;

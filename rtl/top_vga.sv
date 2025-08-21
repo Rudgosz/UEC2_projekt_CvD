@@ -366,6 +366,7 @@ module top_vga (
     draw_projectile_dog u_draw_projectile_dog (
         .clk        (clk65MHz),
         .rst        (rst),
+        .active     (dog_turn),
         .x_pos      (x_pos_dog),
         .y_pos      (y_pos_dog),
         .vga_in     (vga_wind_bg_if.vga_in),
@@ -377,6 +378,7 @@ module top_vga (
     draw_projectile_cat u_draw_projectile_cat (
         .clk        (clk65MHz),
         .rst        (rst),
+        .active     (cat_turn),
         .x_pos      (x_pos_cat),
         .y_pos      (y_pos_cat),
         .vga_in     (vga_projectile_dog_if.vga_in),

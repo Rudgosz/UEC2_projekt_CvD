@@ -81,7 +81,6 @@ module game_fsm (
                 CHECK_WIN: begin
                     enter_start_remote <= 0;
                     next_turn   <= 0;
-                    // Sprawdź warunek zakończenia gry przed zmianą tury
                     if (hp_local == 0 || hp_remote == 0) begin
                         state <= GAME_OVER;
                     end else if (cat_turn) begin

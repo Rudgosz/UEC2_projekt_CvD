@@ -155,6 +155,9 @@ module top_vga (
     logic enter_start_remote;
     logic reset_hp;
 
+    logic is_throwing_dog;
+    logic is_throwing_cat;
+
 
     /**
      * Submodules instances
@@ -348,7 +351,8 @@ module top_vga (
         .y_pos          (y_pos_dog),
         .hit_dog        (hit_cat),
         .wind_force     (wind_force),
-        .throw_done     (turn_done_local)
+        .throw_done     (turn_done_local),
+        .is_throwing    (is_throwing_dog)
     );
 
     throw_ctl_cat u_throw_ctl_cat (
@@ -360,13 +364,14 @@ module top_vga (
         .y_pos          (y_pos_cat),
         .hit_cat        (hit_dog),
         .wind_force     (wind_force),
-        .throw_done     (turn_done_remote)
+        .throw_done     (turn_done_remote),
+        .is_throwing    (is_throwing_cat)
     );
 
     draw_projectile_dog u_draw_projectile_dog (
         .clk        (clk65MHz),
         .rst        (rst),
-        .active     (dog_turn),
+        .active     (is_throwing_dog),
         .x_pos      (x_pos_dog),
         .y_pos      (y_pos_dog),
         .vga_in     (vga_wind_bg_if.vga_in),
@@ -378,7 +383,7 @@ module top_vga (
     draw_projectile_cat u_draw_projectile_cat (
         .clk        (clk65MHz),
         .rst        (rst),
-        .active     (cat_turn),
+        .active     (is_throwing_cat),
         .x_pos      (x_pos_cat),
         .y_pos      (y_pos_cat),
         .vga_in     (vga_projectile_dog_if.vga_in),

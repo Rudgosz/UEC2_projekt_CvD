@@ -17,7 +17,8 @@ module throw_ctl_cat (
     output logic signed [11:0] x_pos,
     output logic signed [11:0] y_pos,
     output logic hit_cat,
-    output logic throw_done
+    output logic throw_done,
+    output logic is_throwing
 );
 
     import vga_pkg::*;
@@ -113,6 +114,7 @@ module throw_ctl_cat (
 
     always_ff @(posedge clk) begin
         if (rst) begin
+            is_throwing <= 0;
             throw_done <= 0;
             state <= ST_IDLE;
             x_pos <= MOUSE_XPOS_CAT;
@@ -126,10 +128,12 @@ module throw_ctl_cat (
         end else begin
             case (state)
                 ST_IDLE: begin
+                    is_throwing <= 0;
                     throw_done <= 0;
                     x_pos <= MOUSE_XPOS_CAT;
                     y_pos <= MOUSE_YPOS_CAT;
                     if (enable) begin
+                        is_throwing <= 1;
                         state <= ST_THROW;
                         time_0_cat <= ms_counter_cat;
                         ypos_0 <= MOUSE_YPOS_CAT;
@@ -140,6 +144,7 @@ module throw_ctl_cat (
                 end
 
                 ST_THROW: begin
+                    is_throwing <= 1;
                     throw_done <= 0;
                     v_temp_cat <= v_0_cat - GRAVITY * elapsed_cat;
                     y_pos <= ypos_0 + v_0_cat * elapsed_cat - (GRAVITY * elapsed_cat * elapsed_cat) / 2;
@@ -154,6 +159,7 @@ module throw_ctl_cat (
                 end
 
                 ST_FALL: begin
+                    is_throwing <= 1;
                     throw_done <= 0;
                     v_temp_cat <= -GRAVITY * elapsed_cat_fall;
                     y_pos <= ypos_0_fall - (GRAVITY * elapsed_cat_fall * elapsed_cat_fall) / 2;
@@ -175,6 +181,7 @@ module throw_ctl_cat (
                 end
 
                 ST_END: begin
+                    is_throwing <= 0;
                     throw_done <= 1;
                     x_pos <= MOUSE_XPOS_CAT;
                     y_pos <= MOUSE_YPOS_CAT;
@@ -184,7 +191,10 @@ module throw_ctl_cat (
                     end
                 end
 
-                default: state <= ST_IDLE;
+                default: begin
+                    state <= ST_IDLE;
+                    is_throwing <= 0;
+                end
             endcase
         end
     end

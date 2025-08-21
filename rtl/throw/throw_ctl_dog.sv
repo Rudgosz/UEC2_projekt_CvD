@@ -17,7 +17,8 @@ module throw_ctl_dog (
     output logic signed [11:0] x_pos,
     output logic signed [11:0] y_pos,
     output logic hit_dog,
-    output logic throw_done
+    output logic throw_done,
+    output logic is_throwing
 );
 
     import vga_pkg::*;
@@ -113,6 +114,7 @@ module throw_ctl_dog (
 
     always_ff @(posedge clk) begin
         if (rst) begin
+            is_throwing <= 0;
             throw_done <= 0;
             state <= ST_IDLE;
             x_pos <= MOUSE_XPOS_DOG;
@@ -127,11 +129,13 @@ module throw_ctl_dog (
         end else begin
             case (state)
                 ST_IDLE: begin
+                    is_throwing <= 0;
                     throw_done <= 0;
                     x_pos <= MOUSE_XPOS_DOG;
                     y_pos <= MOUSE_YPOS_DOG;
                     if (enable) begin
                         state <= ST_THROW;
+                        is_throwing <= 1;
                         time_0 <= ms_counter;
                         ypos_0 <= MOUSE_YPOS_DOG;
                         xpos_0 <= MOUSE_XPOS_DOG;
@@ -142,6 +146,7 @@ module throw_ctl_dog (
 
                 ST_THROW: begin
                     throw_done <= 0;
+                    is_throwing <= 1;
                     v_temp <= v_0 - GRAVITY * elapsed;
                     y_pos <= ypos_0 + v_0 * elapsed - (GRAVITY * elapsed * elapsed) / 2;
                     x_pos <= xpos_0 + (scaled_force + wind_effect) * elapsed;
@@ -156,6 +161,7 @@ module throw_ctl_dog (
 
                 ST_FALL: begin
                     throw_done <= 0;
+                    is_throwing <= 1;
                     v_temp <= -GRAVITY * elapsed_fall;
                     y_pos <= ypos_0_fall - (GRAVITY * elapsed_fall * elapsed_fall) / 2;
                     x_pos <= xpos_0 + (scaled_force + wind_effect) * elapsed_fall;
@@ -177,6 +183,7 @@ module throw_ctl_dog (
 
                 ST_END: begin
                     throw_done <= 1;
+                    is_throwing <= 0;
                     x_pos <= MOUSE_XPOS_DOG;
                     y_pos <= MOUSE_YPOS_DOG;
 
@@ -185,7 +192,10 @@ module throw_ctl_dog (
                     end
                 end
 
-                default: state <= ST_IDLE;
+                default: begin
+                    state <= ST_IDLE;
+                    is_throwing <= 0;
+                end
             endcase
         end
     end

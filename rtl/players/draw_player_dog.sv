@@ -49,7 +49,7 @@ module draw_player_dog (
     assign rel_y = vcount_d - PLAYER_Y;
     assign dog_addr = rel_y * PLAYER_WIDTH + rel_x;
 
-    always_ff @(posedge clk or posedge rst) begin
+    always_ff @(posedge clk) begin
         if (rst) begin
             hit_dog_reg <= 0;
         end else begin
@@ -60,7 +60,7 @@ module draw_player_dog (
         end
     end
 
-    always_ff @(posedge clk or posedge rst) begin
+    always_ff @(posedge clk) begin
         if (rst) begin
             counter_dog  <= 0;
             flash_active <= 0;
@@ -79,7 +79,7 @@ module draw_player_dog (
         end
     end
 
-    always_ff @(posedge clk or posedge rst) begin
+    always_ff @(posedge clk) begin
         if (rst) begin
             hcount_d <= 0;
             vcount_d <= 0;

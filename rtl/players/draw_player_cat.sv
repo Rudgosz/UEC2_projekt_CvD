@@ -48,7 +48,7 @@ module draw_player_cat (
     assign rel_y = vcount_d - PLAYER_Y;
     assign cat_addr = rel_y * PLAYER_WIDTH + rel_x;
 
-    always_ff @(posedge clk or posedge rst) begin
+    always_ff @(posedge clk) begin
         if (rst) begin
             hit_cat_reg <= 0;
         end else begin
@@ -59,7 +59,7 @@ module draw_player_cat (
         end
     end
 
-    always_ff @(posedge clk or posedge rst) begin
+    always_ff @(posedge clk) begin
         if (rst) begin
             counter_cat  <= 0;
             flash_active <= 0;
@@ -78,7 +78,7 @@ module draw_player_cat (
         end
     end
 
-    always_ff @(posedge clk or posedge rst) begin
+    always_ff @(posedge clk) begin
         if (rst) begin
             hcount_d <= 0;
             vcount_d <= 0;

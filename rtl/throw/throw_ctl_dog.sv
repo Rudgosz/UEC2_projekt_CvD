@@ -23,10 +23,10 @@ module throw_ctl_dog (
 
     import vga_pkg::*;
 
-    localparam int INITIAL_VELOCITY = 27;
-    localparam int GRAVITY = 1;
-    localparam int MOUSE_XPOS_DOG = 140;
-    localparam int MOUSE_YPOS_DOG = 350;
+    localparam INITIAL_VELOCITY = 27;
+    localparam GRAVITY = 1;
+    localparam MOUSE_XPOS_DOG = 140;
+    localparam MOUSE_YPOS_DOG = 350;
 
     localparam int INIT_FORCE = 18;
 
@@ -75,7 +75,7 @@ module throw_ctl_dog (
                         HOR_PIXELS - x_pos <= CAT_X_RIGHT && HOR_PIXELS - x_pos >= CAT_X_LEFT);
     end
 
-    always_ff @(posedge clk or posedge rst) begin
+    always_ff @(posedge clk) begin
         if (rst) begin
             dog_in_range_d <= 0;
             hit_dog_reg <= 0;

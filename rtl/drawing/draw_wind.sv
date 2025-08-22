@@ -63,9 +63,9 @@ module draw_wind (
             if (vga_in.vblnk || vga_in.hblnk) begin            
                 vga_out.rgb <= 12'h0_0_0;
             end else if (in_rect) begin
-                vga_out.rgb <= RECT_COLOR;  // Tylko jedno przypisanie!
+                vga_out.rgb <= RECT_COLOR;
             end else begin
-                vga_out.rgb <= vga_in.rgb;  // Domyślnie przekazuj wejściowy RGB
+                vga_out.rgb <= vga_in.rgb;
             end
         end
     end

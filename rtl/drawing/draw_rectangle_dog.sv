@@ -30,7 +30,7 @@ module draw_rectangle_dog (
     logic        rectangle_on;
     logic [11:0] rgb_rectangle;
 
-    always_ff @(posedge clk or posedge rst) begin
+    always_ff @(posedge clk) begin
         if (rst) begin
             rect_width   <= 0;
             step_counter <= 0;

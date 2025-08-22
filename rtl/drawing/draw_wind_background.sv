@@ -73,7 +73,7 @@ module draw_wind_background (
         end
     end
     
-    always_ff @(posedge clk or posedge rst) begin
+    always_ff @(posedge clk) begin
         if (rst) begin
             vga_out.hcount <= 0;
             vga_out.hsync  <= 0;

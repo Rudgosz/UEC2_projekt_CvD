@@ -23,12 +23,12 @@ module throw_ctl_cat (
 
     import vga_pkg::*;
 
-    localparam int INITIAL_VELOCITY = 27;
-    localparam int GRAVITY = 1;
-    localparam int MOUSE_XPOS_CAT = 140;
-    localparam int MOUSE_YPOS_CAT = 350;
+    localparam INITIAL_VELOCITY = 27;
+    localparam GRAVITY = 1;
+    localparam MOUSE_XPOS_CAT = 140;
+    localparam MOUSE_YPOS_CAT = 350;
 
-    localparam int INIT_FORCE = 18;
+    localparam INIT_FORCE = 18;
 
     localparam WALL_X_LEFT = 490;
     localparam WALL_X_RIGHT = 534;
@@ -75,7 +75,7 @@ module throw_ctl_cat (
                         x_pos <= DOG_X_RIGHT && x_pos >= DOG_X_LEFT);
     end
 
-    always_ff @(posedge clk or posedge rst) begin
+    always_ff @(posedge clk) begin
         if (rst) begin
             cat_in_range_d <= 0;
             hit_cat_reg <= 0;

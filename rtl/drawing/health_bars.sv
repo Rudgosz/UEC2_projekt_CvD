@@ -21,7 +21,7 @@ module health_bars (
 );
 
 localparam HEALTH_MAX = 500;
-localparam DAMAGE = 250;
+localparam DAMAGE = 50;
 
 localparam Y_START = 6;
 localparam Y_END = 26;

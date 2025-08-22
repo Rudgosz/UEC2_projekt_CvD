@@ -424,6 +424,7 @@ module top_vga (
         .rst                (rst),
         .enter_start_remote (enter_start_remote),
         .next_turn          (next_turn),
+        .reset_flag         (reset_hp),
         .wind               (wind_force)
     );
     

@@ -11,6 +11,7 @@ module wind_ctl (
     input  logic rst,
     input  logic enter_start_remote,
     input  logic next_turn,
+    input  logic reset_flag,
     output logic [6:0] wind
 );
 
@@ -24,18 +25,21 @@ module wind_ctl (
     logic next_turn_prev;
     logic enter_flag_latched;
 
-    always_ff @(posedge clk or posedge rst) begin
+    always_ff @(posedge clk) begin
         if (rst) begin
             read_index <= 7'h0;
             next_turn_prev <= 0;
             enter_flag_latched <= 0;
             wind <= 0;
+        end else if (reset_flag) begin
+            enter_flag_latched <= 0;
         end else begin
             next_turn_prev <= next_turn;
             
             if (enter_start_remote) begin
                 enter_flag_latched <= 1;
             end
+            
             
             if (next_turn && !next_turn_prev) begin
                 read_index <= read_index + 1;

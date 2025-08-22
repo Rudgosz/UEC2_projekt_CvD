@@ -99,9 +99,14 @@ module game_fsm (
                     next_turn   <= 0;
                     dog_turn <= 0;
                     cat_turn <= 0;
-                    if (enter_pressed_local || enter_pressed_remote) begin
+                    if (enter_pressed_local) begin
                         state    <= START_SCREEN;
                         reset_hp <= 1;
+                    end
+                    if(enter_pressed_remote) begin
+                        state    <= START_SCREEN;
+                        reset_hp <= 1;
+                        enter_start_remote <= 1;
                     end
                 end
 

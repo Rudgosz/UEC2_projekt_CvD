@@ -1,9 +1,53 @@
-# uec2_lab1_student
+# 🐱 Cat vs Dog 🐶
+_UEC2 final project_
 
-**Wszystkie komendy należy wywoływać z głównego folderu projektu** (w tym wypadku `uec2_lab1_student`).\
-_Każdy plik w projekcie posiada nagłówek z krótkim opisem jego funkcji._
+**Cat vs Dog** to prosta gra dla dwóch graczy uruchamiana na układzie **FPGA**.  
+Gracze wcielają się w Kota lub Psa i rzucają w siebie pociskami. Wygrywa ten, kto pierwszy wyeliminuje przeciwnika.
+
+---
+
+## 🎮 Zasady gry
+
+1. Gra przeznaczona jest dla **dwóch graczy**.
+2. Gracz, który pierwszy wciśnie przycisk **Enter/Start** na klawiaturze podłączonej do FPGA, **rozpoczyna rozgrywkę**.
+3. Gracze naprzemiennie rzucają w siebie pociskami.
+4. **Wygrywa ten, kto pierwszy trafi przeciwnika wystarczającą ilość razy**.
+
+---
+
+## ⚙️ Sprzęt
+
+- Układ FPGA Digilent Basys3.
+- Klawiatura podłączona do FPGA.
+- Monitor VGA.
+- Załadowany bitstream (`.bit`) wygenerowany z projektu.
+
+---
+
+## ▶️ Uruchomienie
+1. Wgraj plik `.bit` na obie płytki FPGA.
+2. Podłącz klawiaturę.
+3. **Połącz piny między płytkami w następujący sposób:**
+
+   | Płytka 1            | Płytka 2            |
+   |---------------------|---------------------|
+   | JA1 (space_RX)  ←   | JA2 (space_TX)      |
+   | JA2 (space_TX)  →   | JA1 (space_RX)      |
+   | JA3 (enter_RX)  ←   | JA4 (enter_TX)      |
+   | JA4 (enter_TX)  →   | JA3 (enter_RX)      |
+   |     GND         ←→  | GND                 |
+
+4. Wciśnij **Enter** na klawiaturze, aby rozpocząć grę.
+5. Graj zgodnie z zasadami – gracze przy użyciu spacji rzucają w przeciwnika.
+
+---
+
+---
+
+
 
 ## Inicjalizacja środowiska
+**Wszystkie komendy należy wywoływać z głównego folderu projektu** (w tym wypadku `UEC2_projekt_CvD`).
 
 Aby rozpocząć pracę z projektem, należy uruchomić terminal w folderze projektu i zainicjalizować środowisko:
 

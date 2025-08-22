@@ -38,8 +38,8 @@ module draw_player_dog (
     logic        hit_dog_reg;
 
     logic inside_dog;
-    logic [13:0] rel_x;
-    logic [13:0] rel_y;
+    logic [15:0] rel_x;
+    logic [15:0] rel_y;
 
     assign inside_dog = (hcount_d >= PLAYER_X) && (hcount_d < PLAYER_X + PLAYER_WIDTH) &&
                         (vcount_d >= PLAYER_Y) && (vcount_d < PLAYER_Y + PLAYER_HEIGHT) &&

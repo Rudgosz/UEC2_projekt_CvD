@@ -37,8 +37,8 @@ module draw_player_cat (
     logic        hit_cat_reg;
 
     logic inside_cat;
-    logic [7:0] rel_x;
-    logic [7:0] rel_y;
+    logic [13:0] rel_x;
+    logic [13:0] rel_y;
 
     assign inside_cat = (hcount_d >= PLAYER_X) && (hcount_d < PLAYER_X + PLAYER_WIDTH) &&
                         (vcount_d >= PLAYER_Y) && (vcount_d < PLAYER_Y + PLAYER_HEIGHT) &&
